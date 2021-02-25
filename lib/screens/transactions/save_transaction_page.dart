@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SaveTransactionPage extends StatefulWidget {
   @override
@@ -26,11 +29,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: "Transaction Date",
-                      ),
-                    ),
+                    transactionDateInput(),
                     sectionTitlePadding,
                     dividerWidget('Debit'),
                     Container(
@@ -103,6 +102,10 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     );
   }
 
+  Widget transactionDateInput() {
+    return TransactionDatePicker();
+  }
+
   Container dividerWidget(final String title) {
     return Container(
       child: Row(
@@ -110,6 +113,35 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
           Text(title),
         ],
       ),
+    );
+  }
+}
+
+class TransactionDatePicker extends StatefulWidget {
+  @override
+  _TransactionDatePickerState createState() => _TransactionDatePickerState();
+}
+
+class _TransactionDatePickerState extends State<TransactionDatePicker> {
+  final controller = TextEditingController();
+  final formatter = DateFormat("MMMM dd, y (EEEE)");
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: "Transaction Date",
+      ),
+      onTap: () async {
+        var date = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now().add(Duration(days: 365)),
+        );
+        controller.text = formatter.format(date);
+      },
     );
   }
 }
