@@ -37,11 +37,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: "Account",
-                              ),
-                            ),
+                            child: AccountNameInput(),
                           ),
                           SizedBox(width: 8.0),
                           Expanded(
@@ -113,6 +109,38 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
           Text(title),
         ],
       ),
+    );
+  }
+}
+
+class AccountNameInput extends StatefulWidget {
+  @override
+  _AccountNameInputState createState() => _AccountNameInputState();
+}
+
+class _AccountNameInputState extends State<AccountNameInput> {
+  String value = "Cash on Hand";
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> accountNames = [
+      'Cash on Hand',
+      'Income',
+      'Expense - Personal'
+    ];
+
+    return DropdownButton(
+      value: value,
+      isExpanded: true,
+      items: accountNames
+          .map((name) => DropdownMenuItem(
+                child: Text(name),
+                value: name,
+              ))
+          .toList(),
+      onChanged: (value) {
+        //TODO implementations
+      },
     );
   }
 }
