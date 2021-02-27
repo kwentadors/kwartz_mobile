@@ -1,6 +1,6 @@
-import 'dart:developer';
-
+import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class SaveTransactionPage extends StatefulWidget {
@@ -41,11 +41,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                           ),
                           SizedBox(width: 8.0),
                           Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: "Amount",
-                              ),
-                            ),
+                            child: AmountInput(),
                           ),
                         ],
                       ),
@@ -109,6 +105,34 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
           Text(title),
         ],
       ),
+    );
+  }
+}
+
+class AmountInput extends StatefulWidget {
+  @override
+  _AmountInputState createState() => _AmountInputState();
+}
+
+class _AmountInputState extends State<AmountInput> {
+  final controller = CurrencyTextFieldController(
+    rightSymbol: 'Php ',
+    decimalSymbol: '.',
+    thousandSymbol: ',',
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: "Amount",
+      ),
+      keyboardType: TextInputType.numberWithOptions(
+        signed: false,
+        decimal: true,
+      ),
+      textAlign: TextAlign.end,
     );
   }
 }
