@@ -163,7 +163,9 @@ class _AccountNameInputState extends State<AccountNameInput> {
               ))
           .toList(),
       onChanged: (value) {
-        //TODO implementations
+        setState(() {
+          this.value = value;
+        });
       },
     );
   }
