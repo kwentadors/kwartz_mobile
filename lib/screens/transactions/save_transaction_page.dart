@@ -13,7 +13,22 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
-    var sectionTitlePadding = SizedBox(height: 20.0);
+    var sectionTitlePadding = SizedBox(height: 16.0);
+
+    var debitInputSection = [
+      sectionTitlePadding,
+      dividerWidget('Debit'),
+      JournalEntryWidget(),
+      sectionTitlePadding,
+    ];
+
+    var creditInputSection = [
+      sectionTitlePadding,
+      dividerWidget('Credit'),
+      JournalEntryWidget(),
+      sectionTitlePadding,
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text("New Transaction"),
@@ -29,26 +44,20 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
-                    transactionDateInput(),
-                    sectionTitlePadding,
-                    dividerWidget('Debit'),
-                    JournalEntryWidget(),
-                    sectionTitlePadding,
-                    dividerWidget('Credit'),
-                    JournalEntryWidget(),
-                    SizedBox(height: 24.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Total Amount",
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                        Text(
-                          "2,500.75",
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ],
+                    TransactionDatePicker(),
+                    ...debitInputSection,
+                    ...creditInputSection,
+                    SizedBox(height: 16.0),
+                    SizedBox(height: 16.0),
+                    TotalAmountView(2500.0),
+                    SizedBox(height: 8.0),
+                    RaisedButton(
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          print("Saved!");
+                        }
+                      },
+                      child: Text("Record"),
                     )
                   ],
                 ),
@@ -60,10 +69,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     );
   }
 
-  Widget transactionDateInput() {
-    return TransactionDatePicker();
-  }
-
   Container dividerWidget(final String title) {
     return Container(
       child: Row(
@@ -71,6 +76,29 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
           Text(title),
         ],
       ),
+    );
+  }
+}
+
+class TotalAmountView extends StatelessWidget {
+  final double amount;
+
+  const TotalAmountView(this.amount);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Total Amount",
+          style: Theme.of(context).textTheme.subtitle1,
+        ),
+        Text(
+          NumberFormat.decimalPattern().format(amount),
+          style: Theme.of(context).textTheme.subtitle1,
+        ),
+      ],
     );
   }
 }
@@ -177,6 +205,11 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      validator: (value) {
+        if (value.isEmpty) {
+          return "Select a transaction date";
+        }
+      },
       decoration: InputDecoration(
         labelText: "Transaction Date",
       ),
