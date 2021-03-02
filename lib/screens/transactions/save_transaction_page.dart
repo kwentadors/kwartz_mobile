@@ -10,6 +10,7 @@ class SaveTransactionPage extends StatefulWidget {
 
 class _SaveTransactionPageState extends State<SaveTransactionPage> {
   final _formKey = GlobalKey<FormState>();
+  String value;
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +153,13 @@ class _AmountInputState extends State<AmountInput> {
         decimal: true,
       ),
       textAlign: TextAlign.end,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Provide amount in transsaction";
+        }
+
+        return null;
+      },
     );
   }
 }
@@ -172,8 +180,14 @@ class _AccountNameInputState extends State<AccountNameInput> {
       'Expense - Personal'
     ];
 
-    return DropdownButton(
+    return DropdownButtonFormField(
       value: value,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Select an account';
+        }
+        return null;
+      },
       isDense: true,
       isExpanded: true,
       hint: Text('Account'),
@@ -209,6 +223,7 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
         if (value.isEmpty) {
           return "Select a transaction date";
         }
+        return null;
       },
       decoration: InputDecoration(
         labelText: "Transaction Date",
