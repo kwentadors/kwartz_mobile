@@ -32,20 +32,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                     transactionDateInput(),
                     sectionTitlePadding,
                     dividerWidget('Debit'),
-                    Container(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: AccountNameInput(),
-                          ),
-                          SizedBox(width: 8.0),
-                          Expanded(
-                            child: AmountInput(),
-                          ),
-                        ],
-                      ),
-                    ),
+                    JournalEntryWidget(),
                     sectionTitlePadding,
                     dividerWidget('Credit'),
                     Container(
@@ -109,6 +96,31 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 }
 
+class JournalEntryWidget extends StatelessWidget {
+  const JournalEntryWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            flex: 2,
+            child: AccountNameInput(),
+          ),
+          SizedBox(width: 8.0),
+          Expanded(
+            child: AmountInput(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class AmountInput extends StatefulWidget {
   @override
   _AmountInputState createState() => _AmountInputState();
@@ -143,7 +155,7 @@ class AccountNameInput extends StatefulWidget {
 }
 
 class _AccountNameInputState extends State<AccountNameInput> {
-  String value = "Cash on Hand";
+  String value;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +167,9 @@ class _AccountNameInputState extends State<AccountNameInput> {
 
     return DropdownButton(
       value: value,
+      isDense: true,
       isExpanded: true,
+      hint: Text('Account'),
       items: accountNames
           .map((name) => DropdownMenuItem(
                 child: Text(name),
