@@ -35,28 +35,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                     JournalEntryWidget(),
                     sectionTitlePadding,
                     dividerWidget('Credit'),
-                    Container(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: "Account",
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8.0),
-                          Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: "Amount",
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    JournalEntryWidget(),
                     SizedBox(height: 24.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
