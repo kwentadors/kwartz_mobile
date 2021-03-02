@@ -10,7 +10,9 @@ class SaveTransactionPage extends StatefulWidget {
 
 class _SaveTransactionPageState extends State<SaveTransactionPage> {
   final _formKey = GlobalKey<FormState>();
-  String value;
+
+  final TextEditingController _transactionDateController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,8 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
-                    TransactionDatePicker(),
+                    TransactionDatePicker(
+                        controller: _transactionDateController),
                     ...debitInputSection,
                     ...creditInputSection,
                     SizedBox(height: 16.0),
@@ -53,11 +56,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                     TotalAmountView(2500.0),
                     SizedBox(height: 8.0),
                     RaisedButton(
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          print("Saved!");
-                        }
-                      },
+                      onPressed: saveForm,
                       child: Text("Record"),
                     )
                   ],
@@ -68,6 +67,15 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
         ),
       ),
     );
+  }
+
+  void saveForm() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    _formKey.currentState.save();
+    print("Transaction Date: " + _transactionDateController.text);
   }
 
   Container dividerWidget(final String title) {
@@ -207,18 +215,21 @@ class _AccountNameInputState extends State<AccountNameInput> {
 }
 
 class TransactionDatePicker extends StatefulWidget {
+  final TextEditingController controller;
+
+  const TransactionDatePicker({Key key, this.controller}) : super(key: key);
+
   @override
   _TransactionDatePickerState createState() => _TransactionDatePickerState();
 }
 
 class _TransactionDatePickerState extends State<TransactionDatePicker> {
-  final controller = TextEditingController();
   final formatter = DateFormat("MMMM dd, y (EEEE)");
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
+      controller: this.widget.controller,
       validator: (value) {
         if (value.isEmpty) {
           return "Select a transaction date";
@@ -235,7 +246,7 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
           firstDate: DateTime(1900),
           lastDate: DateTime.now().add(Duration(days: 365)),
         );
-        controller.text = formatter.format(date);
+        this.widget.controller.text = formatter.format(date);
       },
     );
   }
