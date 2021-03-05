@@ -57,7 +57,8 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                     ...creditInputSection,
                     SizedBox(height: 16.0),
                     SizedBox(height: 16.0),
-                    TotalAmountView(2500.0),
+                    TotalAmountSection(
+                        debitAmount: 2500.0, creditAmount: 2500.00),
                     SizedBox(height: 8.0),
                     RaisedButton(
                       onPressed: saveForm,
@@ -80,8 +81,8 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
 
     _formKey.currentState.save();
     print("Transaction Date: " + _transactionDateController.text);
-    print("Debit amount: " + _debitAmountController.text);
-    print("Credit amount: " + _creditAmountController.text);
+    print("Debit debitAmount: " + _debitAmountController.text);
+    print("Credit debitAmount: " + _creditAmountController.text);
   }
 
   Container dividerWidget(final String title) {
@@ -103,13 +104,22 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 }
 
-class TotalAmountView extends StatelessWidget {
-  final double amount;
+class TotalAmountSection extends StatelessWidget {
+  final double debitAmount;
+  final double creditAmount;
 
-  const TotalAmountView(this.amount);
+  const TotalAmountSection({this.debitAmount, this.creditAmount});
 
   @override
   Widget build(BuildContext context) {
+    if (debitAmount == creditAmount) {
+      return textAmountView(context);
+    } else {
+      return errorView(context);
+    }
+  }
+
+  Row textAmountView(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -118,8 +128,19 @@ class TotalAmountView extends StatelessWidget {
           style: Theme.of(context).textTheme.subtitle1,
         ),
         Text(
-          NumberFormat.decimalPattern().format(amount),
+          NumberFormat.decimalPattern().format(debitAmount),
           style: Theme.of(context).textTheme.subtitle1,
+        ),
+      ],
+    );
+  }
+
+  Row errorView(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          "The debit and credit amounts do not match.",
+          style: TextStyle(color: Theme.of(context).errorColor),
         ),
       ],
     );
