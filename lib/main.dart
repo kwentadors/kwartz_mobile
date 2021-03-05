@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kwartz',
-      darkTheme: ThemeData.dark(),
+      // darkTheme: ThemeData.dark(),
       theme: ThemeData(
-        brightness: Brightness.dark,
+        // brightness: Brightness.dark,
         primaryColor: Colors.pink[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
