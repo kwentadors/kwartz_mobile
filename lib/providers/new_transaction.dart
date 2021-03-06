@@ -9,11 +9,17 @@ class NewTransaction with ChangeNotifier {
     notifyListeners();
   }
 
+  void setAccount(FinancialAccount account) {
+    transaction.account = account;
+    notifyListeners();
+  }
+
   void setDebitAmount(double amount) {
     transaction.debitAmount = amount;
     notifyListeners();
   }
 
   DateTime get transactionDate => transaction.transactionDate;
+  FinancialAccount get account => transaction.account;
   double get debitAmount => transaction.debitAmount;
 }

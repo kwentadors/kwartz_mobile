@@ -1,5 +1,6 @@
 import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:kwartz_mobile/models/transaction.dart';
 import 'package:kwartz_mobile/providers/new_transaction.dart';
 import 'package:provider/provider.dart';
 
@@ -75,20 +76,20 @@ class AccountNameInput extends StatefulWidget {
 }
 
 class _AccountNameInputState extends State<AccountNameInput> {
-  String value;
+  FinancialAccount value;
 
   @override
   Widget build(BuildContext context) {
-    List<String> accountNames = [
-      'Cash on Hand',
-      'Income',
-      'Expense - Personal'
+    List<FinancialAccount> accounts = [
+      FinancialAccount(name: 'Cash on Hand'),
+      FinancialAccount(name: 'Income'),
+      FinancialAccount(name: 'Expense - Personal')
     ];
 
-    return DropdownButtonFormField(
+    return DropdownButtonFormField<FinancialAccount>(
       value: value,
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (value == null) {
           return 'Select an account';
         }
         return null;
@@ -96,16 +97,15 @@ class _AccountNameInputState extends State<AccountNameInput> {
       isDense: true,
       isExpanded: true,
       hint: Text('Account'),
-      items: accountNames
-          .map((name) => DropdownMenuItem(
-                child: Text(name),
-                value: name,
+      items: accounts
+          .map((account) => DropdownMenuItem(
+                child: Text(account.name),
+                value: account,
               ))
           .toList(),
       onChanged: (value) {
-        setState(() {
-          this.value = value;
-        });
+        var transaction = Provider.of<NewTransaction>(context, listen: false);
+        transaction.setAccount(value);
       },
     );
   }

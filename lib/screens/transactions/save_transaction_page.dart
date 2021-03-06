@@ -53,7 +53,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: ChangeNotifierProvider(
                   create: (_) => NewTransaction(),
-                  child: Column(
+                  builder: (context, _) => Column(
                     children: <Widget>[
                       TransactionDatePicker(
                           controller: _transactionDateController),
@@ -65,7 +65,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                           debitAmount: 2500.0, creditAmount: 2500.00),
                       SizedBox(height: 8.0),
                       RaisedButton(
-                        onPressed: saveForm,
+                        onPressed: () => saveForm(context),
                         child: Text("Record"),
                       )
                     ],
@@ -79,12 +79,16 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     );
   }
 
-  void saveForm() {
+  void saveForm(BuildContext context) {
     if (!_formKey.currentState.validate()) {
       return;
     }
 
     _formKey.currentState.save();
+
+    var trx = Provider.of<NewTransaction>(context, listen: false);
+    print(trx.toString());
+
     print("Transaction Date: " + _transactionDateController.text);
     print("Debit debitAmount: " + _debitAmountController.text);
     print("Credit debitAmount: " + _creditAmountController.text);
