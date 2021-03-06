@@ -1,6 +1,8 @@
 import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kwartz_mobile/providers/new_transaction.dart';
+import 'package:provider/provider.dart';
 import 'package:kwartz_mobile/molecules/transaction_date_picker.dart';
 import '../../molecules/journal_entry.dart';
 
@@ -49,22 +51,25 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
               key: _formKey,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    TransactionDatePicker(
-                        controller: _transactionDateController),
-                    ...debitInputSection,
-                    ...creditInputSection,
-                    SizedBox(height: 16.0),
-                    SizedBox(height: 16.0),
-                    TotalAmountSection(
-                        debitAmount: 2500.0, creditAmount: 2500.00),
-                    SizedBox(height: 8.0),
-                    RaisedButton(
-                      onPressed: saveForm,
-                      child: Text("Record"),
-                    )
-                  ],
+                child: ChangeNotifierProvider(
+                  create: (_) => NewTransaction(),
+                  child: Column(
+                    children: <Widget>[
+                      TransactionDatePicker(
+                          controller: _transactionDateController),
+                      ...debitInputSection,
+                      ...creditInputSection,
+                      SizedBox(height: 16.0),
+                      SizedBox(height: 16.0),
+                      TotalAmountSection(
+                          debitAmount: 2500.0, creditAmount: 2500.00),
+                      SizedBox(height: 8.0),
+                      RaisedButton(
+                        onPressed: saveForm,
+                        child: Text("Record"),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -112,14 +117,19 @@ class TotalAmountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (debitAmount == creditAmount) {
-      return textAmountView(context);
-    } else {
-      return errorView(context);
-    }
+    return Consumer<NewTransaction>(
+      builder: (context, transaction, child) {
+        print("Consumer: " + transaction.debitAmount.toString());
+        // if (debitAmount == creditAmount) {
+        return textAmountView(context, transaction.debitAmount);
+        // } else {
+        //   return errorView(context);
+        // }
+      },
+    );
   }
 
-  Row textAmountView(BuildContext context) {
+  Row textAmountView(BuildContext context, double amount) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -128,7 +138,7 @@ class TotalAmountSection extends StatelessWidget {
           style: Theme.of(context).textTheme.subtitle1,
         ),
         Text(
-          NumberFormat.decimalPattern().format(debitAmount),
+          amount != null ? amount.toStringAsFixed(2) : "0.00",
           style: Theme.of(context).textTheme.subtitle1,
         ),
       ],

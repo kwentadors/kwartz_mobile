@@ -1,7 +1,10 @@
+import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:kwartz_mobile/providers/new_transaction.dart';
+import 'package:provider/provider.dart';
 
 class JournalEntryWidget extends StatelessWidget {
-  final TextEditingController amountController;
+  final CurrencyTextFieldController amountController;
 
   const JournalEntryWidget({Key key, this.amountController}) : super(key: key);
 
@@ -26,7 +29,7 @@ class JournalEntryWidget extends StatelessWidget {
 }
 
 class AmountInput extends StatefulWidget {
-  final TextEditingController controller;
+  final CurrencyTextFieldController controller;
 
   const AmountInput({Key key, this.controller}) : super(key: key);
 
@@ -35,7 +38,7 @@ class AmountInput extends StatefulWidget {
 }
 
 class _AmountInputState extends State<AmountInput> {
-  final TextEditingController controller;
+  final CurrencyTextFieldController controller;
 
   _AmountInputState(this.controller);
 
@@ -57,6 +60,10 @@ class _AmountInputState extends State<AmountInput> {
         }
 
         return null;
+      },
+      onChanged: (value) {
+        var trx = Provider.of<NewTransaction>(context, listen: false);
+        trx.setDebitAmount(controller.doubleValue);
       },
     );
   }
