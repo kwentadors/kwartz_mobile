@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kwartz_mobile/providers/new_transaction.dart';
+import 'package:provider/provider.dart';
 import '../atoms/date_picker.dart';
 
 class TransactionDatePicker extends StatefulWidget {
@@ -14,6 +16,11 @@ class TransactionDatePicker extends StatefulWidget {
 class _TransactionDatePickerState extends State<TransactionDatePicker> {
   @override
   Widget build(BuildContext context) {
+    var transaction = Provider.of<NewTransaction>(context);
+
+    var formatter = DateFormat("MMMM dd, y (EEEE)");
+    this.widget.controller.text = formatter.format(transaction.transactionDate);
+
     return DatePicker(
       controller: this.widget.controller,
       validator: (value) {
@@ -23,10 +30,13 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
         return null;
       },
       labelText: "Transaction Date",
-      initialDate: DateTime.now(),
+      initialDate: transaction.transactionDate,
       firstDate: DateTime(1900),
       lastDate: DateTime.now().add(Duration(days: 365)),
-      formatter: DateFormat("MMMM dd, y (EEEE)"),
+      formatter: formatter,
+      onChanged: (value) {
+        transaction.setTransactionDate(value);
+      },
     );
   }
 }

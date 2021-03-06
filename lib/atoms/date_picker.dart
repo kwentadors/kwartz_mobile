@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 class DatePicker extends StatefulWidget {
   final TextEditingController controller;
   final Function validator;
+  final Function onChanged;
   final String labelText;
   final DateTime initialDate;
   final DateTime firstDate;
@@ -18,7 +19,8 @@ class DatePicker extends StatefulWidget {
       @required this.initialDate,
       @required this.firstDate,
       @required this.lastDate,
-      @required this.formatter})
+      @required this.formatter,
+      this.onChanged})
       : super(key: key);
 
   @override
@@ -42,6 +44,7 @@ class _DatePickerState extends State<DatePicker> {
           lastDate: widget.lastDate,
         );
         this.widget.controller.text = widget.formatter.format(date);
+        widget.onChanged(date);
       },
     );
   }
