@@ -25,10 +25,10 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     var sectionTitlePadding = SizedBox(height: 16.0);
 
     var creditInputSection = [
-      sectionTitlePadding,
-      dividerWidget('Credit'),
-      JournalEntryWidget(amountController: _creditAmountController),
-      sectionTitlePadding,
+      // sectionTitlePadding,
+      // dividerWidget('Credit'),
+      // JournalEntryWidget(amountController: _creditAmountController),
+      // sectionTitlePadding,
     ];
 
     return Scaffold(
@@ -73,9 +73,9 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
+    // if (!_formKey.currentState.validate()) {
+    //   return;
+    // }
 
     _formKey.currentState.save();
 
@@ -111,15 +111,20 @@ class DebitSection extends StatelessWidget {
   Widget build(BuildContext context) {
     var sectionTitlePadding = SizedBox(height: 16.0);
 
-    var trx = Provider.of<NewTransaction>(context, listen: false);
-
     return Consumer<NewTransaction>(
       builder: (context, trx, child) {
         return Column(
           children: [
             sectionTitlePadding,
             dividerWidget('Debit'),
-            ...(trx.debitEntries.map((entry) => JournalEntryWidget()).toList()),
+            ...(trx.debitEntries
+                .asMap()
+                .entries
+                .map((entry) => JournalEntryWidget(
+                      key: ValueKey<int>(entry.key),
+                      entry: entry.value,
+                    ))
+                .toList()),
             Container(
               alignment: Alignment.centerRight,
               child: FlatButton.icon(

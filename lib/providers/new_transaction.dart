@@ -30,9 +30,18 @@ class NewTransaction with ChangeNotifier {
     return JournalEntry();
   }
 
+  void setDebitEntryAt(int position, JournalEntry entry) {
+    transaction.debitEntries[position] = entry;
+    notifyListeners();
+  }
+
   DateTime get transactionDate => transaction.transactionDate;
   FinancialAccount get account => transaction.account;
   double get debitAmount => transaction.debitAmount;
+
+  JournalEntry getDebitEntryAt(int position) {
+    return transaction.debitEntries[position];
+  }
 
   List<JournalEntry> get debitEntries => transaction.debitEntries;
 

@@ -19,8 +19,14 @@ class JournalEntry {
   double amount = 0.0;
 }
 
+@immutable
 class FinancialAccount {
-  String name;
+  final String name;
 
-  FinancialAccount({@required this.name});
+  FinancialAccount(this.name);
+
+  @override
+  bool operator ==(Object other) {
+    return other is FinancialAccount && name == other.name;
+  }
 }

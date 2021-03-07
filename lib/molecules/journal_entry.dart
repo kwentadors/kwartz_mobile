@@ -1,13 +1,13 @@
 import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:kwartz_mobile/models/transaction.dart';
-import 'package:kwartz_mobile/providers/new_transaction.dart';
+import '../models/transaction.dart';
+import '../providers/new_transaction.dart';
 import 'package:provider/provider.dart';
 
 class JournalEntryWidget extends StatelessWidget {
-  final CurrencyTextFieldController amountController;
+  final JournalEntry entry;
 
-  const JournalEntryWidget({Key key, this.amountController}) : super(key: key);
+  const JournalEntryWidget({Key key, this.entry}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,14 @@ class JournalEntryWidget extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: AccountNameInput(),
+            child: AccountNameInput(
+              entry.account,
+              key: key,
+            ),
           ),
           SizedBox(width: 8.0),
           Expanded(
-            child: AmountInput(controller: amountController),
+            child: AmountInput(key: key),
           ),
         ],
       ),
@@ -30,18 +33,18 @@ class JournalEntryWidget extends StatelessWidget {
 }
 
 class AmountInput extends StatefulWidget {
-  final CurrencyTextFieldController controller;
-
-  const AmountInput({Key key, this.controller}) : super(key: key);
+  const AmountInput({Key key}) : super(key: key);
 
   @override
-  _AmountInputState createState() => _AmountInputState(controller);
+  _AmountInputState createState() => _AmountInputState();
 }
 
 class _AmountInputState extends State<AmountInput> {
-  final CurrencyTextFieldController controller;
-
-  _AmountInputState(this.controller);
+  final CurrencyTextFieldController controller = CurrencyTextFieldController(
+    rightSymbol: 'Php ',
+    decimalSymbol: '.',
+    thousandSymbol: ',',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +66,21 @@ class _AmountInputState extends State<AmountInput> {
         return null;
       },
       onChanged: (value) {
-        var trx = Provider.of<NewTransaction>(context, listen: false);
-        trx.setDebitAmount(controller.doubleValue);
+        var transaction = Provider.of<NewTransaction>(context, listen: false);
+        var entryIndex = (this.widget.key as ValueKey<int>).value;
+        var journalEntry = transaction.getDebitEntryAt(entryIndex);
+        journalEntry.amount = controller.doubleValue;
+        transaction.setDebitEntryAt(entryIndex, journalEntry);
       },
     );
   }
 }
 
 class AccountNameInput extends StatefulWidget {
+  final FinancialAccount account;
+
+  const AccountNameInput(this.account, {Key key}) : super(key: key);
+
   @override
   _AccountNameInputState createState() => _AccountNameInputState();
 }
@@ -81,9 +91,9 @@ class _AccountNameInputState extends State<AccountNameInput> {
   @override
   Widget build(BuildContext context) {
     List<FinancialAccount> accounts = [
-      FinancialAccount(name: 'Cash on Hand'),
-      FinancialAccount(name: 'Income'),
-      FinancialAccount(name: 'Expense - Personal')
+      FinancialAccount('Cash on Hand'),
+      FinancialAccount('Income'),
+      FinancialAccount('Expense - Personal')
     ];
 
     return DropdownButtonFormField<FinancialAccount>(
@@ -105,7 +115,10 @@ class _AccountNameInputState extends State<AccountNameInput> {
           .toList(),
       onChanged: (value) {
         var transaction = Provider.of<NewTransaction>(context, listen: false);
-        transaction.setAccount(value);
+        var entryIndex = (this.widget.key as ValueKey<int>).value;
+        var journalEntry = transaction.getDebitEntryAt(entryIndex);
+        journalEntry.account = value;
+        transaction.setDebitEntryAt(entryIndex, journalEntry);
       },
     );
   }
