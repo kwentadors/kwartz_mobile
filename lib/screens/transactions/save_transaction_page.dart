@@ -24,13 +24,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   Widget build(BuildContext context) {
     var sectionTitlePadding = SizedBox(height: 16.0);
 
-    var debitInputSection = [
-      sectionTitlePadding,
-      dividerWidget('Debit'),
-      JournalEntryWidget(amountController: _debitAmountController),
-      sectionTitlePadding,
-    ];
-
     var creditInputSection = [
       sectionTitlePadding,
       dividerWidget('Credit'),
@@ -51,13 +44,13 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
               key: _formKey,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ChangeNotifierProvider(
-                  create: (_) => NewTransaction(),
+                child: ChangeNotifierProvider<NewTransaction>(
+                  create: (_) => NewTransaction.create(),
                   builder: (context, _) => Column(
                     children: <Widget>[
                       TransactionDatePicker(
                           controller: _transactionDateController),
-                      ...debitInputSection,
+                      DebitSection(),
                       ...creditInputSection,
                       SizedBox(height: 16.0),
                       SizedBox(height: 16.0),
@@ -109,6 +102,48 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
       rightSymbol: 'Php ',
       decimalSymbol: '.',
       thousandSymbol: ',',
+    );
+  }
+}
+
+class DebitSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var sectionTitlePadding = SizedBox(height: 16.0);
+
+    var trx = Provider.of<NewTransaction>(context, listen: false);
+
+    return Consumer<NewTransaction>(
+      builder: (context, trx, child) {
+        return Column(
+          children: [
+            sectionTitlePadding,
+            dividerWidget('Debit'),
+            ...(trx.debitEntries.map((entry) => JournalEntryWidget()).toList()),
+            Container(
+              alignment: Alignment.centerRight,
+              child: FlatButton.icon(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  trx.createDebitEntry();
+                },
+                label: Text("Add debit entry"),
+              ),
+            ),
+            sectionTitlePadding,
+          ],
+        );
+      },
+    );
+  }
+
+  Container dividerWidget(final String title) {
+    return Container(
+      child: Row(
+        children: [
+          Text(title),
+        ],
+      ),
     );
   }
 }
