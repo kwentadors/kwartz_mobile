@@ -2,10 +2,9 @@ import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
 import '../models/transaction.dart';
 import '../providers/new_transaction.dart';
-import 'package:provider/provider.dart';
 
 class JournalEntryWidget extends StatelessWidget {
-  final JournalEntry entry;
+  final JournalEntryProvider entry;
 
   const JournalEntryWidget({Key key, this.entry}) : super(key: key);
 
@@ -18,13 +17,16 @@ class JournalEntryWidget extends StatelessWidget {
           Expanded(
             flex: 2,
             child: AccountNameInput(
-              entry.account,
               key: key,
+              entry: entry,
             ),
           ),
           SizedBox(width: 8.0),
           Expanded(
-            child: AmountInput(key: key),
+            child: AmountInput(
+              key: key,
+              entry: entry,
+            ),
           ),
         ],
       ),
@@ -33,7 +35,8 @@ class JournalEntryWidget extends StatelessWidget {
 }
 
 class AmountInput extends StatefulWidget {
-  const AmountInput({Key key}) : super(key: key);
+  final JournalEntryProvider entry;
+  const AmountInput({Key key, @required this.entry}) : super(key: key);
 
   @override
   _AmountInputState createState() => _AmountInputState();
@@ -65,21 +68,17 @@ class _AmountInputState extends State<AmountInput> {
 
         return null;
       },
-      onChanged: (value) {
-        var transaction = Provider.of<NewTransaction>(context, listen: false);
-        var entryIndex = (this.widget.key as ValueKey<int>).value;
-        var journalEntry = transaction.getDebitEntryAt(entryIndex);
-        journalEntry.amount = controller.doubleValue;
-        transaction.setDebitEntryAt(entryIndex, journalEntry);
+      onChanged: (_) {
+        this.widget.entry.setAmount(controller.doubleValue);
       },
     );
   }
 }
 
 class AccountNameInput extends StatefulWidget {
-  final FinancialAccount account;
+  final JournalEntryProvider entry;
 
-  const AccountNameInput(this.account, {Key key}) : super(key: key);
+  const AccountNameInput({Key key, @required this.entry}) : super(key: key);
 
   @override
   _AccountNameInputState createState() => _AccountNameInputState();
@@ -97,7 +96,7 @@ class _AccountNameInputState extends State<AccountNameInput> {
     ];
 
     return DropdownButtonFormField<FinancialAccount>(
-      value: value,
+      value: this.widget.entry.account,
       validator: (value) {
         if (value == null) {
           return 'Select an account';
@@ -114,11 +113,7 @@ class _AccountNameInputState extends State<AccountNameInput> {
               ))
           .toList(),
       onChanged: (value) {
-        var transaction = Provider.of<NewTransaction>(context, listen: false);
-        var entryIndex = (this.widget.key as ValueKey<int>).value;
-        var journalEntry = transaction.getDebitEntryAt(entryIndex);
-        journalEntry.account = value;
-        transaction.setDebitEntryAt(entryIndex, journalEntry);
+        this.widget.entry.setAccount(value);
       },
     );
   }

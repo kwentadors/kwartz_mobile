@@ -2,51 +2,81 @@ import 'package:flutter/material.dart';
 import '../models/transaction.dart';
 
 class NewTransaction with ChangeNotifier {
-  Transaction transaction;
+  Transaction _transaction;
 
   NewTransaction() {
-    transaction = Transaction();
-    transaction.createDebitEntry();
+    _transaction = Transaction();
+    _transaction.createDebitEntry();
+    _transaction.createCreditEntry();
   }
 
   void setTransactionDate(DateTime trxDate) {
-    transaction.transactionDate = trxDate;
+    _transaction.transactionDate = trxDate;
     notifyListeners();
   }
 
   void setAccount(FinancialAccount account) {
-    transaction.account = account;
+    _transaction.account = account;
     notifyListeners();
   }
 
   void setDebitAmount(double amount) {
-    transaction.debitAmount = amount;
+    _transaction.debitAmount = amount;
     notifyListeners();
   }
 
   JournalEntry createDebitEntry() {
-    transaction.createDebitEntry();
+    var journalEntry = _transaction.createDebitEntry();
     notifyListeners();
-    return JournalEntry();
+    return journalEntry;
+  }
+
+  JournalEntry createCreditEntry() {
+    var journalEntry = _transaction.createCreditEntry();
+    notifyListeners();
+    return journalEntry;
   }
 
   void setDebitEntryAt(int position, JournalEntry entry) {
-    transaction.debitEntries[position] = entry;
+    _transaction.debitEntries[position] = entry;
     notifyListeners();
   }
 
-  DateTime get transactionDate => transaction.transactionDate;
-  FinancialAccount get account => transaction.account;
-  double get debitAmount => transaction.debitAmount;
+  DateTime get transactionDate => _transaction.transactionDate;
+  FinancialAccount get account => _transaction.account;
+  double get debitAmount => _transaction.debitAmount;
 
   JournalEntry getDebitEntryAt(int position) {
-    return transaction.debitEntries[position];
+    return _transaction.debitEntries[position];
   }
 
-  List<JournalEntry> get debitEntries => transaction.debitEntries;
+  List<JournalEntryProvider> get debitEntries =>
+      _transaction.debitEntries.map((e) => JournalEntryProvider(e)).toList();
+
+  List<JournalEntryProvider> get creditEntries =>
+      _transaction.creditEntries.map((e) => JournalEntryProvider(e)).toList();
 
   static NewTransaction create() {
     var instance = NewTransaction();
     return instance;
   }
+}
+
+class JournalEntryProvider with ChangeNotifier {
+  final JournalEntry entry;
+
+  JournalEntryProvider(this.entry);
+
+  void setAccount(FinancialAccount value) {
+    entry.account = value;
+    notifyListeners();
+  }
+
+  void setAmount(double value) {
+    entry.amount = value;
+    notifyListeners();
+  }
+
+  double get amount => entry.amount;
+  FinancialAccount get account => entry.account;
 }

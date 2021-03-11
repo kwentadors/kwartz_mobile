@@ -6,10 +6,17 @@ class Transaction {
   double debitAmount = 0.0;
 
   List<JournalEntry> debitEntries = [];
+  List<JournalEntry> creditEntries = [];
 
   JournalEntry createDebitEntry() {
     var entry = JournalEntry();
     debitEntries.add(entry);
+    return entry;
+  }
+
+  JournalEntry createCreditEntry() {
+    var entry = JournalEntry();
+    creditEntries.add(entry);
     return entry;
   }
 }

@@ -22,15 +22,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
-    var sectionTitlePadding = SizedBox(height: 16.0);
-
-    var creditInputSection = [
-      // sectionTitlePadding,
-      // dividerWidget('Credit'),
-      // JournalEntryWidget(amountController: _creditAmountController),
-      // sectionTitlePadding,
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text("New Transaction"),
@@ -45,25 +36,26 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ChangeNotifierProvider<NewTransaction>(
-                  create: (_) => NewTransaction.create(),
-                  builder: (context, _) => Column(
-                    children: <Widget>[
-                      TransactionDatePicker(
-                          controller: _transactionDateController),
-                      DebitSection(),
-                      ...creditInputSection,
-                      SizedBox(height: 16.0),
-                      SizedBox(height: 16.0),
-                      TotalAmountSection(
-                          debitAmount: 2500.0, creditAmount: 2500.00),
-                      SizedBox(height: 8.0),
-                      RaisedButton(
-                        onPressed: () => saveForm(context),
-                        child: Text("Record"),
-                      )
-                    ],
-                  ),
-                ),
+                    create: (_) => NewTransaction.create(),
+                    builder: (context, _) {
+                      return Column(
+                        children: <Widget>[
+                          TransactionDatePicker(
+                              controller: _transactionDateController),
+                          DebitSection(),
+                          CreditSection(),
+                          SizedBox(height: 16.0),
+                          SizedBox(height: 16.0),
+                          TotalAmountSection(
+                              debitAmount: 2500.0, creditAmount: 2500.00),
+                          SizedBox(height: 8.0),
+                          RaisedButton(
+                            onPressed: () => saveForm(context),
+                            child: Text("Record"),
+                          )
+                        ],
+                      );
+                    }),
               ),
             ),
           ),
@@ -121,10 +113,9 @@ class DebitSection extends StatelessWidget {
                 .asMap()
                 .entries
                 .map((entry) => JournalEntryWidget(
-                      key: ValueKey<int>(entry.key),
+                      key: ValueKey("CR-${entry.key}"),
                       entry: entry.value,
-                    ))
-                .toList()),
+                    ))).toList(),
             Container(
               alignment: Alignment.centerRight,
               child: FlatButton.icon(
@@ -135,10 +126,53 @@ class DebitSection extends StatelessWidget {
                 label: Text("Add debit entry"),
               ),
             ),
-            sectionTitlePadding,
           ],
         );
       },
+    );
+  }
+
+  Container dividerWidget(final String title) {
+    return Container(
+      child: Row(
+        children: [
+          Text(title),
+        ],
+      ),
+    );
+  }
+}
+
+class CreditSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var sectionTitlePadding = SizedBox(height: 16.0);
+
+    return Consumer<NewTransaction>(
+      builder: (context, transaction, _) => Column(
+        children: [
+          sectionTitlePadding,
+          dividerWidget('Credit'),
+          ...transaction.creditEntries
+              .asMap()
+              .entries
+              .map((entry) => JournalEntryWidget(
+                    key: ValueKey("CR-${entry.key}"),
+                    entry: entry.value,
+                  )),
+          Container(
+            alignment: Alignment.centerRight,
+            child: FlatButton.icon(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                transaction.createCreditEntry();
+              },
+              label: Text("Add credit entry"),
+            ),
+          ),
+          sectionTitlePadding,
+        ],
+      ),
     );
   }
 
