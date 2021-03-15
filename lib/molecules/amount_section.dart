@@ -13,11 +13,15 @@ class TotalAmountSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NewTransaction>(
       builder: (context, transaction, child) {
-        if (transaction.debitAmount == transaction.creditAmount) {
-          return textAmountView(context, transaction.debitAmount);
-        } else {
+        if (transaction.debitAmount == 0 || transaction.creditAmount == 0) {
+          return Row();
+        }
+
+        if (transaction.debitAmount != transaction.creditAmount) {
           return errorView(context);
         }
+
+        return textAmountView(context, transaction.debitAmount);
       },
     );
   }
