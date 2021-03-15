@@ -15,16 +15,6 @@ class NewTransaction with ChangeNotifier {
     notifyListeners();
   }
 
-  void setAccount(FinancialAccount account) {
-    _transaction.account = account;
-    notifyListeners();
-  }
-
-  void setDebitAmount(double amount) {
-    _transaction.debitAmount = amount;
-    notifyListeners();
-  }
-
   JournalEntry createDebitEntry() {
     var journalEntry = _transaction.createDebitEntry();
     notifyListeners();
@@ -43,29 +33,38 @@ class NewTransaction with ChangeNotifier {
   }
 
   DateTime get transactionDate => _transaction.transactionDate;
-  FinancialAccount get account => _transaction.account;
-  double get debitAmount => _transaction.debitAmount;
 
-  JournalEntry getDebitEntryAt(int position) {
-    return _transaction.debitEntries[position];
-  }
+  List<JournalEntryProvider> get debitEntries => _transaction.debitEntries
+      .map((e) => JournalEntryProvider(this, e))
+      .toList();
 
-  List<JournalEntryProvider> get debitEntries =>
-      _transaction.debitEntries.map((e) => JournalEntryProvider(e)).toList();
+  List<JournalEntryProvider> get creditEntries => _transaction.creditEntries
+      .map((e) => JournalEntryProvider(this, e))
+      .toList();
 
-  List<JournalEntryProvider> get creditEntries =>
-      _transaction.creditEntries.map((e) => JournalEntryProvider(e)).toList();
+  double get debitAmount => _transaction.debitEntries
+      .fold(0, (previousValue, element) => previousValue + element.amount);
+
+  double get creditAmount => _transaction.creditEntries
+      .fold(0, (previousValue, element) => previousValue + element.amount);
 
   static NewTransaction create() {
     var instance = NewTransaction();
     return instance;
   }
+
+  static NewTransaction from(Transaction transaction) {
+    var instance = NewTransaction();
+    instance._transaction = transaction;
+    return instance;
+  }
 }
 
 class JournalEntryProvider with ChangeNotifier {
+  final NewTransaction transaction;
   final JournalEntry entry;
 
-  JournalEntryProvider(this.entry);
+  JournalEntryProvider(this.transaction, this.entry);
 
   void setAccount(FinancialAccount value) {
     entry.account = value;

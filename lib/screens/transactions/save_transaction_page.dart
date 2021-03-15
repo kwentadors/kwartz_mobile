@@ -74,9 +74,9 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     var trx = Provider.of<NewTransaction>(context, listen: false);
     print(trx.toString());
 
-    print("Transaction Date: " + _transactionDateController.text);
-    print("Debit debitAmount: " + _debitAmountController.text);
-    print("Credit debitAmount: " + _creditAmountController.text);
+    print("Transaction Date: " + trx.transactionDate.toIso8601String());
+    print("Debit debitAmount: " + trx.debitAmount.toString());
+    print("Credit debitAmount: " + trx.creditAmount.toString());
   }
 
   Container dividerWidget(final String title) {

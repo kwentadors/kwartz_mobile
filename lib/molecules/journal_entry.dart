@@ -70,6 +70,7 @@ class _AmountInputState extends State<AmountInput> {
       },
       onChanged: (_) {
         this.widget.entry.setAmount(controller.doubleValue);
+        this.widget.entry.transaction.notifyListeners();
       },
     );
   }
@@ -114,6 +115,7 @@ class _AccountNameInputState extends State<AccountNameInput> {
           .toList(),
       onChanged: (value) {
         this.widget.entry.setAccount(value);
+        this.widget.entry.transaction.notifyListeners();
       },
     );
   }
