@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kwartz_mobile/providers/new_transaction.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +13,11 @@ class TotalAmountSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NewTransaction>(
       builder: (context, transaction, child) {
-        // if (debitAmount == creditAmount) {
-        return textAmountView(context, transaction.debitAmount);
-        // } else {
-        //   return errorView(context);
-        // }
+        if (transaction.debitAmount == transaction.creditAmount) {
+          return textAmountView(context, transaction.debitAmount);
+        } else {
+          return errorView(context);
+        }
       },
     );
   }
@@ -30,7 +31,8 @@ class TotalAmountSection extends StatelessWidget {
           style: Theme.of(context).textTheme.subtitle1,
         ),
         Text(
-          amount != null ? amount.toStringAsFixed(2) : "0.00",
+          NumberFormat.simpleCurrency(decimalDigits: 2, name: "Php ")
+              .format(amount),
           style: Theme.of(context).textTheme.subtitle1,
         ),
       ],
