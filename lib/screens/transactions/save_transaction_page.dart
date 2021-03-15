@@ -16,10 +16,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
 
   final _transactionDateController = TextEditingController();
 
-  final _debitAmountController = amountFieldController();
-
-  final _creditAmountController = amountFieldController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,24 +74,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     print("Debit debitAmount: " + trx.debitAmount.toString());
     print("Credit debitAmount: " + trx.creditAmount.toString());
   }
-
-  Container dividerWidget(final String title) {
-    return Container(
-      child: Row(
-        children: [
-          Text(title),
-        ],
-      ),
-    );
-  }
-
-  static CurrencyTextFieldController amountFieldController() {
-    return CurrencyTextFieldController(
-      rightSymbol: 'Php ',
-      decimalSymbol: '.',
-      thousandSymbol: ',',
-    );
-  }
 }
 
 class DebitSection extends StatelessWidget {
@@ -108,7 +86,7 @@ class DebitSection extends StatelessWidget {
         return Column(
           children: [
             sectionTitlePadding,
-            dividerWidget('Debit'),
+            SectionTitle('Debit'),
             ...(trx.debitEntries
                 .asMap()
                 .entries
@@ -131,16 +109,6 @@ class DebitSection extends StatelessWidget {
       },
     );
   }
-
-  Container dividerWidget(final String title) {
-    return Container(
-      child: Row(
-        children: [
-          Text(title),
-        ],
-      ),
-    );
-  }
 }
 
 class CreditSection extends StatelessWidget {
@@ -152,7 +120,7 @@ class CreditSection extends StatelessWidget {
       builder: (context, transaction, _) => Column(
         children: [
           sectionTitlePadding,
-          dividerWidget('Credit'),
+          SectionTitle('Credit'),
           ...transaction.creditEntries
               .asMap()
               .entries
@@ -175,8 +143,18 @@ class CreditSection extends StatelessWidget {
       ),
     );
   }
+}
 
-  Container dividerWidget(final String title) {
+class SectionTitle extends StatelessWidget {
+  const SectionTitle(
+    this.title, {
+    Key key,
+  }) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       child: Row(
         children: [
