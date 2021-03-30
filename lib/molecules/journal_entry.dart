@@ -43,11 +43,7 @@ class AmountInput extends StatefulWidget {
 }
 
 class _AmountInputState extends State<AmountInput> {
-  final CurrencyTextFieldController controller = CurrencyTextFieldController(
-    rightSymbol: 'Php ',
-    decimalSymbol: '.',
-    thousandSymbol: ',',
-  );
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +65,7 @@ class _AmountInputState extends State<AmountInput> {
         return null;
       },
       onChanged: (_) {
-        this.widget.entry.setAmount(controller.doubleValue);
+        this.widget.entry.setAmount(double.parse(controller.text));
         this.widget.entry.transaction.notifyListeners();
       },
     );

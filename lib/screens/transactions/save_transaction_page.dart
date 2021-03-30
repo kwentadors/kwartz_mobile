@@ -61,9 +61,9 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
-    // if (!_formKey.currentState.validate()) {
-    //   return;
-    // }
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
 
     _formKey.currentState.save();
 
