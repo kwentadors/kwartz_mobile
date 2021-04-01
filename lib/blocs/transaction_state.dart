@@ -8,3 +8,9 @@ class TransactionInitial extends TransactionState {}
 class TransactionSaving extends TransactionState {}
 
 class TransactionSaveSuccess extends TransactionState {}
+
+class TransactionSaveError extends TransactionState {
+  final Exception cause;
+
+  TransactionSaveError(this.cause);
+}

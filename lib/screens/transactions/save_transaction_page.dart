@@ -29,6 +29,10 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                   SnackBar(content: Text("Successfully saved transaction")));
+          } else if (state is TransactionSaveError) {
+            Scaffold.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text("Something went wrong!")));
           }
         },
         builder: (context, state) {
@@ -90,11 +94,11 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
+    // if (!_formKey.currentState.validate()) {
+    //   return;
+    // }
 
-    _formKey.currentState.save();
+    // _formKey.currentState.save();
 
     var trxProvider = Provider.of<NewTransaction>(context, listen: false);
     BlocProvider.of<TransactionBloc>(context)

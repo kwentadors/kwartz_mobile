@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Transaction {
   DateTime transactionDate = DateTime.now();
+  String description;
   List<JournalEntry> debitEntries = [];
   List<JournalEntry> creditEntries = [];
 
@@ -16,6 +17,9 @@ class Transaction {
     creditEntries.add(entry);
     return entry;
   }
+
+// TODO verify the entries have the same amount
+  double get amount => debitEntries.fold(0, (sum, entry) => sum + entry.amount);
 }
 
 class JournalEntry {

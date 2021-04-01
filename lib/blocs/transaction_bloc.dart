@@ -18,9 +18,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     TransactionEvent event,
   ) async* {
     if (event is SaveTransaction) {
+      yield* handleSaveTransaction(event);
+    }
+  }
+
+  Stream<TransactionState> handleSaveTransaction(SaveTransaction event) async* {
+    try {
       yield TransactionSaving();
       await _movieRepository.save(event.transaction);
       yield TransactionSaveSuccess();
+    } on Exception catch (e) {
+      yield TransactionSaveError(e);
     }
   }
 }
