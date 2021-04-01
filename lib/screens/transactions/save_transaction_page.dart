@@ -33,6 +33,10 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
             Scaffold.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(SnackBar(content: Text("Something went wrong!")));
+          } else if (state is TransactionSaveSuccess) {
+            Scaffold.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text("Successfully saved!")));
           }
         },
         builder: (context, state) {
