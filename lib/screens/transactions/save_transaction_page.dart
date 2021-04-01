@@ -24,7 +24,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
       ),
       body: BlocConsumer<TransactionBloc, TransactionState>(
         listener: (context, state) {
-          print("Listened to state: " + state.toString());
           if (state is TransactionSaveSuccess) {
             Scaffold.of(context)
               ..hideCurrentSnackBar()
@@ -33,7 +32,6 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
           }
         },
         builder: (context, state) {
-          print("Built state: " + state.toString());
           if (state is TransactionSaving) {
             return loadingForm();
           }
@@ -43,11 +41,13 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     );
   }
 
-  Container loadingForm() {
-    return Container(
-      height: 50,
-      width: 50,
-      child: CircularProgressIndicator(),
+  Widget loadingForm() {
+    return Center(
+      child: Container(
+        height: 50,
+        width: 50,
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 
@@ -90,20 +90,15 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
-    // if (!_formKey.currentState.validate()) {
-    //   return;
-    // }
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
 
-    // _formKey.currentState.save();
+    _formKey.currentState.save();
 
-    // var trx = Provider.of<NewTransaction>(context, listen: false);
-    // print(trx.toString());
-
-    // print("Transaction Date: " + trx.transactionDate.toIso8601String());
-    // print("Debit debitAmount: " + trx.debitAmount.toString());
-    // print("Credit debitAmount: " + trx.creditAmount.toString());
-
-    BlocProvider.of<TransactionBloc>(context).add(SaveTransaction());
+    var trxProvider = Provider.of<NewTransaction>(context, listen: false);
+    BlocProvider.of<TransactionBloc>(context)
+        .add(SaveTransaction(trxProvider.transaction));
   }
 }
 

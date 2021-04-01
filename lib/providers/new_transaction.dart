@@ -32,6 +32,7 @@ class NewTransaction with ChangeNotifier {
     notifyListeners();
   }
 
+  Transaction get transaction => _transaction;
   DateTime get transactionDate => _transaction.transactionDate;
 
   List<JournalEntryProvider> get debitEntries => _transaction.debitEntries
