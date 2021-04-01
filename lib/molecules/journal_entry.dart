@@ -1,4 +1,3 @@
-import 'package:currency_textfield/currency_textfield.dart';
 import 'package:flutter/material.dart';
 import '../models/transaction.dart';
 import '../providers/new_transaction.dart';

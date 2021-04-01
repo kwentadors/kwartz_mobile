@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwartz_mobile/bloc/transaction_bloc.dart';
 import 'package:kwartz_mobile/screens/transactions/save_transaction_page.dart';
 
 void main() {
@@ -16,7 +18,10 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.pink[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SaveTransactionPage(),
+      home: BlocProvider(
+        create: (BuildContext context) => TransactionBloc(),
+        child: SaveTransactionPage(),
+      ),
     );
   }
 }
