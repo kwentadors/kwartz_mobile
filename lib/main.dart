@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/bloc/transaction_bloc.dart';
-import 'package:kwartz_mobile/screens/transactions/save_transaction_page.dart';
+import './blocs/transaction_bloc.dart';
+import './screens/transactions/save_transaction_page.dart';
 
 void main() {
   runApp(MyApp());

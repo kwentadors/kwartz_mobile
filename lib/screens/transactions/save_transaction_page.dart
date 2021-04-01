@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../../bloc/transaction_bloc.dart';
+import '../../blocs/transaction_bloc.dart';
 import '../../molecules/amount_section.dart';
 import '../../providers/new_transaction.dart';
 import '../../molecules/transaction_date_picker.dart';
