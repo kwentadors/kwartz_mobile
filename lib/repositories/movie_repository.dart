@@ -30,9 +30,9 @@ class MovieRepository {
   }
 
   Transaction decode(Map<String, Object> properties) {
-    var transaction = (Transaction())
-      ..transactionDate = DateTime.parse(properties['transaction_date'])
-      ..description = properties['description'];
+    var transaction = (Transaction(
+        transactionDate: DateTime.parse(properties['transaction_date']),
+        description: properties['description']));
 
     (properties['credit'] as List).forEach((element) {
       transaction.createCreditEntry()

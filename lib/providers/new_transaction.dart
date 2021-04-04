@@ -11,7 +11,7 @@ class NewTransaction with ChangeNotifier {
   }
 
   void setTransactionDate(DateTime trxDate) {
-    _transaction.transactionDate = trxDate;
+    // _transaction.transactionDate = trxDate;
     notifyListeners();
   }
 

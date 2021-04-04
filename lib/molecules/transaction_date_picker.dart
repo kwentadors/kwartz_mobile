@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kwartz_mobile/providers/new_transaction.dart';
-import 'package:provider/provider.dart';
+import 'package:kwartz_mobile/blocs/transaction_bloc.dart';
 import '../atoms/date_picker.dart';
 
 class TransactionDatePicker extends StatefulWidget {
@@ -16,7 +16,9 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    var transaction = Provider.of<NewTransaction>(context);
+    var transaction = (BlocProvider.of<TransactionBloc>(context).state
+            as EditingTransactionState)
+        .transaction;
 
     var formatter = DateFormat("MMMM dd, y (EEEE)");
     controller.text = formatter.format(transaction.transactionDate);
@@ -35,7 +37,8 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
       lastDate: DateTime.now().add(Duration(days: 365)),
       formatter: formatter,
       onChanged: (value) {
-        transaction.setTransactionDate(value);
+        BlocProvider.of<TransactionBloc>(context)
+            .add(UpdateTransactionDate(value));
       },
     );
   }

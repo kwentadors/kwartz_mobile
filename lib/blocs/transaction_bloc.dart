@@ -11,7 +11,7 @@ part 'transaction_state.dart';
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final MovieRepository _movieRepository = new MovieRepository();
 
-  TransactionBloc() : super(TransactionInitial());
+  TransactionBloc() : super(EditingTransactionState(Transaction.initial()));
 
   @override
   Stream<TransactionState> mapEventToState(
@@ -19,16 +19,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async* {
     if (event is SaveTransaction) {
       yield* handleSaveTransaction(event);
+    } else if (event is UpdateTransactionDate) {
+      var transaction =
+          state.transaction.copyWith(transactionDate: event.transactionDate);
+      yield EditingTransactionState(transaction);
     }
   }
 
   Stream<TransactionState> handleSaveTransaction(SaveTransaction event) async* {
     try {
-      yield TransactionSaving();
+      yield TransactionSaving(state.transaction);
       await _movieRepository.save(event.transaction);
-      yield TransactionSaveSuccess();
+      yield TransactionSaveSuccess(state.transaction);
     } on Exception catch (e) {
-      yield TransactionSaveError(e);
+      yield TransactionSaveError(state.transaction, e);
     }
   }
 }

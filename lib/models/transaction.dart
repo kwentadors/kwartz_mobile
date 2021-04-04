@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 
 class Transaction {
-  DateTime transactionDate = DateTime.now();
-  String description;
-  List<JournalEntry> debitEntries = [];
-  List<JournalEntry> creditEntries = [];
+  final DateTime transactionDate;
+  final String description;
+  final List<JournalEntry> debitEntries;
+  final List<JournalEntry> creditEntries;
+
+  const Transaction({
+    this.transactionDate,
+    this.description,
+    this.debitEntries,
+    this.creditEntries,
+  });
+
+  double get debitAmount => debitEntries.fold(
+      0, (previousValue, element) => previousValue + element.amount);
+
+  double get creditAmount => creditEntries.fold(
+      0, (previousValue, element) => previousValue + element.amount);
+
+  Transaction.initial()
+      : this(
+          transactionDate: DateTime.now(),
+          description: null,
+          debitEntries: <JournalEntry>[],
+          creditEntries: <JournalEntry>[],
+        );
 
   JournalEntry createDebitEntry() {
     var entry = JournalEntry(this);
@@ -20,6 +41,14 @@ class Transaction {
 
 // TODO verify the entries have the same amount
   double get amount => debitEntries.fold(0, (sum, entry) => sum + entry.amount);
+
+  Transaction copyWith({
+    DateTime transactionDate,
+  }) {
+    return Transaction(
+      transactionDate: transactionDate ?? this.transactionDate,
+    );
+  }
 }
 
 class JournalEntry {

@@ -74,12 +74,11 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
                   return Column(
                     children: <Widget>[
                       TransactionDatePicker(),
-                      DebitSection(),
-                      CreditSection(),
+                      // DebitSection(),
+                      // CreditSection(),
                       SizedBox(height: 16.0),
                       SizedBox(height: 16.0),
-                      TotalAmountSection(
-                          debitAmount: 2500.0, creditAmount: 2500.00),
+                      TotalAmountSection(),
                       SizedBox(height: 8.0),
                       RaisedButton(
                         onPressed: () => saveForm(context),
@@ -114,8 +113,9 @@ class DebitSection extends StatelessWidget {
   Widget build(BuildContext context) {
     var sectionTitlePadding = SizedBox(height: 16.0);
 
-    return Consumer<NewTransaction>(
-      builder: (context, trx, child) {
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        var trx = state.transaction;
         return Column(
           children: [
             sectionTitlePadding,
