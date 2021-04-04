@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:intl/intl.dart';
 
 import './api.dart';
 import '../models/transaction.dart';
-import 'package:http/http.dart' as http;
 
 class MovieRepository {
   final formatter = DateFormat("y-MM-dd");

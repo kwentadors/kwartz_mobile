@@ -14,7 +14,6 @@ class SaveTransactionPage extends StatefulWidget {
 
 class _SaveTransactionPageState extends State<SaveTransactionPage> {
   final _formKey = GlobalKey<FormState>();
-  final _transactionDateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -70,26 +69,26 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ChangeNotifierProvider<NewTransaction>(
-                  create: (_) => NewTransaction.create(),
-                  builder: (context, _) {
-                    return Column(
-                      children: <Widget>[
-                        TransactionDatePicker(
-                            controller: _transactionDateController),
-                        DebitSection(),
-                        CreditSection(),
-                        SizedBox(height: 16.0),
-                        SizedBox(height: 16.0),
-                        TotalAmountSection(
-                            debitAmount: 2500.0, creditAmount: 2500.00),
-                        SizedBox(height: 8.0),
-                        RaisedButton(
-                          onPressed: () => saveForm(context),
-                          child: Text("Record"),
-                        )
-                      ],
-                    );
-                  }),
+                create: (_) => NewTransaction.create(),
+                builder: (context, _) {
+                  return Column(
+                    children: <Widget>[
+                      TransactionDatePicker(),
+                      DebitSection(),
+                      CreditSection(),
+                      SizedBox(height: 16.0),
+                      SizedBox(height: 16.0),
+                      TotalAmountSection(
+                          debitAmount: 2500.0, creditAmount: 2500.00),
+                      SizedBox(height: 8.0),
+                      RaisedButton(
+                        onPressed: () => saveForm(context),
+                        child: Text("Record"),
+                      )
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
