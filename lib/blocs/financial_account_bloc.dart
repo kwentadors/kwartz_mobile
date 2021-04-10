@@ -11,7 +11,6 @@ part 'financial_account_state.dart';
 class FinancialAccountBloc
     extends Bloc<FinancialAccountEvent, FinancialAccountState> {
   final _financialAccountRepository = FinancialAccountRepository();
-  List<FinancialAccount> accounts;
 
   FinancialAccountBloc() : super(PrebootState());
 
@@ -23,10 +22,7 @@ class FinancialAccountBloc
   Stream<FinancialAccountState> mapEventToState(
     FinancialAccountEvent event,
   ) async* {
-    if (event is BootState) {
-      accounts =
-          List.unmodifiable(await _financialAccountRepository.fetchAll());
-      yield ReadyState();
-    }
+    var accounts = await _financialAccountRepository.fetchAll();
+    yield ReadyState(List.unmodifiable(accounts));
   }
 }

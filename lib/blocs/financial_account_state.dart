@@ -1,12 +1,16 @@
 part of 'financial_account_bloc.dart';
 
 @immutable
-abstract class FinancialAccountState {}
+abstract class FinancialAccountState {
+  final List<FinancialAccount> accounts;
 
-class FinancialAccountInitial extends FinancialAccountState {}
+  FinancialAccountState(this.accounts);
+}
 
-class PrebootState extends FinancialAccountState {}
+class PrebootState extends FinancialAccountState {
+  PrebootState() : super(List.empty());
+}
 
-class BootState extends FinancialAccountState {}
-
-class ReadyState extends FinancialAccountState {}
+class ReadyState extends FinancialAccountState {
+  ReadyState(List<FinancialAccount> accounts) : super(accounts);
+}
