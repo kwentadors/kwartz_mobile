@@ -4,7 +4,7 @@ import 'api.dart';
 class FinancialAccountRepository {
   final apiClient = ApiClient();
 
-  static final URL = "/api/v1/accounts";
+  static const URL = "/api/v1/accounts";
 
   Future<List<FinancialAccount>> fetchAll() async {
     var response = await apiClient.get(path: URL);
