@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/bloc/transaction_bloc.dart';
-import 'package:kwartz_mobile/screens/transactions/save_transaction_page.dart';
+import 'package:logging/logging.dart';
+import './blocs/transaction_bloc.dart';
+import './screens/transactions/save_transaction_page.dart';
 
 void main() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
+
   runApp(MyApp());
 }
 

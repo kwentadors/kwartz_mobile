@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kwartz_mobile/providers/new_transaction.dart';
-import 'package:provider/provider.dart';
+import '../blocs/transaction_bloc.dart';
 import '../atoms/date_picker.dart';
 
 class TransactionDatePicker extends StatefulWidget {
-  final TextEditingController controller;
-
-  const TransactionDatePicker({Key key, this.controller}) : super(key: key);
+  const TransactionDatePicker({Key key}) : super(key: key);
 
   @override
   _TransactionDatePickerState createState() => _TransactionDatePickerState();
 }
 
 class _TransactionDatePickerState extends State<TransactionDatePicker> {
+  final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    var transaction = Provider.of<NewTransaction>(context);
+    var transaction =
+        BlocProvider.of<TransactionBloc>(context).state.transaction;
 
     var formatter = DateFormat("MMMM dd, y (EEEE)");
-    this.widget.controller.text = formatter.format(transaction.transactionDate);
+    controller.text = formatter.format(transaction.transactionDate);
 
     return DatePicker(
-      controller: this.widget.controller,
+      controller: controller,
       validator: (value) {
         if (value.isEmpty) {
           return "Select a transaction date";
@@ -35,7 +36,8 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
       lastDate: DateTime.now().add(Duration(days: 365)),
       formatter: formatter,
       onChanged: (value) {
-        transaction.setTransactionDate(value);
+        BlocProvider.of<TransactionBloc>(context)
+            .add(UpdateTransactionDate(value));
       },
     );
   }

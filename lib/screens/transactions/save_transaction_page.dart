@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
-import '../../bloc/transaction_bloc.dart';
+import '../../blocs/transaction_bloc.dart';
 import '../../molecules/amount_section.dart';
-import '../../providers/new_transaction.dart';
 import '../../molecules/transaction_date_picker.dart';
 import '../../molecules/journal_entry.dart';
 
@@ -14,7 +12,6 @@ class SaveTransactionPage extends StatefulWidget {
 
 class _SaveTransactionPageState extends State<SaveTransactionPage> {
   final _formKey = GlobalKey<FormState>();
-  final _transactionDateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +21,22 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
       ),
       body: BlocConsumer<TransactionBloc, TransactionState>(
         listener: (context, state) {
-          print("Listened to state: " + state.toString());
           if (state is TransactionSaveSuccess) {
             Scaffold.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                   SnackBar(content: Text("Successfully saved transaction")));
+          } else if (state is TransactionSaveError) {
+            Scaffold.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text("Something went wrong!")));
+          } else if (state is TransactionSaveSuccess) {
+            Scaffold.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text("Successfully saved!")));
           }
         },
         builder: (context, state) {
-          print("Built state: " + state.toString());
           if (state is TransactionSaving) {
             return loadingForm();
           }
@@ -43,11 +46,13 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     );
   }
 
-  Container loadingForm() {
-    return Container(
-      height: 50,
-      width: 50,
-      child: CircularProgressIndicator(),
+  Widget loadingForm() {
+    return Center(
+      child: Container(
+        height: 50,
+        width: 50,
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 
@@ -61,27 +66,21 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
             key: _formKey,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ChangeNotifierProvider<NewTransaction>(
-                  create: (_) => NewTransaction.create(),
-                  builder: (context, _) {
-                    return Column(
-                      children: <Widget>[
-                        TransactionDatePicker(
-                            controller: _transactionDateController),
-                        DebitSection(),
-                        CreditSection(),
-                        SizedBox(height: 16.0),
-                        SizedBox(height: 16.0),
-                        TotalAmountSection(
-                            debitAmount: 2500.0, creditAmount: 2500.00),
-                        SizedBox(height: 8.0),
-                        RaisedButton(
-                          onPressed: () => saveForm(context),
-                          child: Text("Record"),
-                        )
-                      ],
-                    );
-                  }),
+              child: Column(
+                children: <Widget>[
+                  TransactionDatePicker(),
+                  DebitSection(),
+                  CreditSection(),
+                  SizedBox(height: 16.0),
+                  SizedBox(height: 16.0),
+                  TotalAmountSection(),
+                  SizedBox(height: 8.0),
+                  RaisedButton(
+                    onPressed: () => saveForm(context),
+                    child: Text("Record"),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -90,20 +89,16 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
+    // TODO validation
     // if (!_formKey.currentState.validate()) {
     //   return;
     // }
 
     // _formKey.currentState.save();
 
-    // var trx = Provider.of<NewTransaction>(context, listen: false);
-    // print(trx.toString());
-
-    // print("Transaction Date: " + trx.transactionDate.toIso8601String());
-    // print("Debit debitAmount: " + trx.debitAmount.toString());
-    // print("Credit debitAmount: " + trx.creditAmount.toString());
-
-    BlocProvider.of<TransactionBloc>(context).add(SaveTransaction());
+    var transactionBloc = BlocProvider.of<TransactionBloc>(context);
+    var transaction = transactionBloc.state.transaction;
+    transactionBloc.add(SaveTransaction(transaction));
   }
 }
 
@@ -112,8 +107,9 @@ class DebitSection extends StatelessWidget {
   Widget build(BuildContext context) {
     var sectionTitlePadding = SizedBox(height: 16.0);
 
-    return Consumer<NewTransaction>(
-      builder: (context, trx, child) {
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        var trx = state.transaction;
         return Column(
           children: [
             sectionTitlePadding,
@@ -122,7 +118,7 @@ class DebitSection extends StatelessWidget {
                 .asMap()
                 .entries
                 .map((entry) => JournalEntryWidget(
-                      key: ValueKey("CR-${entry.key}"),
+                      key: ValueKey(entry.key),
                       entry: entry.value,
                     ))).toList(),
             Container(
@@ -130,7 +126,8 @@ class DebitSection extends StatelessWidget {
               child: FlatButton.icon(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  trx.createDebitEntry();
+                  BlocProvider.of<TransactionBloc>(context)
+                      .add(AddDebitEntryEvent());
                 },
                 label: Text("Add debit entry"),
               ),
@@ -146,32 +143,33 @@ class CreditSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var sectionTitlePadding = SizedBox(height: 16.0);
+    var transaction =
+        BlocProvider.of<TransactionBloc>(context).state.transaction;
 
-    return Consumer<NewTransaction>(
-      builder: (context, transaction, _) => Column(
-        children: [
-          sectionTitlePadding,
-          SectionTitle('Credit'),
-          ...transaction.creditEntries
-              .asMap()
-              .entries
-              .map((entry) => JournalEntryWidget(
-                    key: ValueKey("CR-${entry.key}"),
-                    entry: entry.value,
-                  )),
-          Container(
-            alignment: Alignment.centerRight,
-            child: FlatButton.icon(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                transaction.createCreditEntry();
-              },
-              label: Text("Add credit entry"),
-            ),
+    return Column(
+      children: [
+        sectionTitlePadding,
+        SectionTitle('Credit'),
+        ...transaction.creditEntries
+            .asMap()
+            .entries
+            .map((entry) => JournalEntryWidget(
+                  key: ValueKey(entry.key),
+                  entry: entry.value,
+                )),
+        Container(
+          alignment: Alignment.centerRight,
+          child: FlatButton.icon(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              BlocProvider.of<TransactionBloc>(context)
+                  .add(AddCreditEntryEvent());
+            },
+            label: Text("Add credit entry"),
           ),
-          sectionTitlePadding,
-        ],
-      ),
+        ),
+        sectionTitlePadding,
+      ],
     );
   }
 }

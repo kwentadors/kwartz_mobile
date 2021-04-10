@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kwartz_mobile/providers/new_transaction.dart';
-import 'package:provider/provider.dart';
+import '../blocs/transaction_bloc.dart';
 
 class TotalAmountSection extends StatelessWidget {
-  final double debitAmount;
-  final double creditAmount;
-
-  const TotalAmountSection({this.debitAmount, this.creditAmount});
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<NewTransaction>(
-      builder: (context, transaction, child) {
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        var transaction = state.transaction;
         if (transaction.debitAmount == 0 || transaction.creditAmount == 0) {
           return Row();
         }
