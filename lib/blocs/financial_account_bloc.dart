@@ -22,7 +22,7 @@ class FinancialAccountBloc
   Stream<FinancialAccountState> mapEventToState(
     FinancialAccountEvent event,
   ) async* {
-    var accounts = await _financialAccountRepository.fetchAll();
+    var accounts = await _financialAccountRepository.getAll();
     yield ReadyState(List.unmodifiable(accounts));
   }
 }

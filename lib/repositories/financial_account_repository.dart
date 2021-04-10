@@ -6,16 +6,27 @@ class FinancialAccountRepository {
 
   static const URL = "/api/v1/accounts";
 
-  Future<List<FinancialAccount>> fetchAll() async {
-    var response = await apiClient.get(path: URL);
-    return _decode(response as List<Map<String, Object>>);
+  List<FinancialAccount> _accountsCache;
+
+  Future<List<FinancialAccount>> getAll() async {
+    if (_accountsCache == null) {
+      _accountsCache = await _fetchFromDatabase();
+    }
+
+    return _accountsCache;
   }
 
-  List<FinancialAccount> _decode(List<Map<String, Object>> accounts) {
-    return accounts.map((e) => _decodeObject(e)).toList();
+  List<FinancialAccount> _decode(accounts) {
+    return new List<FinancialAccount>.from(
+        accounts.map((e) => FinancialAccount(e['name'])));
   }
 
-  FinancialAccount _decodeObject(Map<String, Object> properties) {
+  FinancialAccount _decodeObject(properties) {
     return FinancialAccount(properties['name']);
+  }
+
+  Future<List<FinancialAccount>> _fetchFromDatabase() async {
+    var response = await apiClient.get(path: URL);
+    return _decode(response['data']);
   }
 }
