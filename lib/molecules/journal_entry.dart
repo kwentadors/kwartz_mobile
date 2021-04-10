@@ -1,9 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import '../blocs/transaction_bloc.dart';
 import '../models/transaction.dart';
-import '../providers/new_transaction.dart';
 
 class JournalEntryWidget extends StatelessWidget {
-  final JournalEntryProvider entry;
+  final JournalEntry entry;
 
   const JournalEntryWidget({Key key, this.entry}) : super(key: key);
 
@@ -34,7 +35,7 @@ class JournalEntryWidget extends StatelessWidget {
 }
 
 class AmountInput extends StatefulWidget {
-  final JournalEntryProvider entry;
+  final JournalEntry entry;
   const AmountInput({Key key, @required this.entry}) : super(key: key);
 
   @override
@@ -63,16 +64,25 @@ class _AmountInputState extends State<AmountInput> {
 
         return null;
       },
-      onChanged: (_) {
-        this.widget.entry.setAmount(double.parse(controller.text));
-        this.widget.entry.transaction.notifyListeners();
+      onChanged: (value) {
+        var journalEntry =
+            this.widget.entry.copyWith(amount: double.parse(value));
+        var journalEntryIndex = (this.widget.key as ValueKey).value;
+
+        if (journalEntry.type == JournalEntryType.DEBIT) {
+          BlocProvider.of<TransactionBloc>(context)
+              .add(UpdateDebitEntry(journalEntryIndex, journalEntry));
+        } else {
+          BlocProvider.of<TransactionBloc>(context)
+              .add(UpdateCreditEntry(journalEntryIndex, journalEntry));
+        }
       },
     );
   }
 }
 
 class AccountNameInput extends StatefulWidget {
-  final JournalEntryProvider entry;
+  final JournalEntry entry;
 
   const AccountNameInput({Key key, @required this.entry}) : super(key: key);
 
@@ -92,7 +102,7 @@ class _AccountNameInputState extends State<AccountNameInput> {
     ];
 
     return DropdownButtonFormField<FinancialAccount>(
-      value: this.widget.entry.account,
+      value: this.widget.entry?.account,
       validator: (value) {
         if (value == null) {
           return 'Select an account';
@@ -104,13 +114,20 @@ class _AccountNameInputState extends State<AccountNameInput> {
       hint: Text('Account'),
       items: accounts
           .map((account) => DropdownMenuItem(
-                child: Text(account.name),
+                child: Text(account?.name ?? "Empty"),
                 value: account,
               ))
           .toList(),
       onChanged: (value) {
-        this.widget.entry.setAccount(value);
-        this.widget.entry.transaction.notifyListeners();
+        var journalEntry = this.widget.entry.copyWith(account: value);
+        var journalEntryIndex = (this.widget.key as ValueKey).value;
+        if (journalEntry.type == JournalEntryType.DEBIT) {
+          BlocProvider.of<TransactionBloc>(context)
+              .add(UpdateDebitEntry(journalEntryIndex, journalEntry));
+        } else {
+          BlocProvider.of<TransactionBloc>(context)
+              .add(UpdateCreditEntry(journalEntryIndex, journalEntry));
+        }
       },
     );
   }

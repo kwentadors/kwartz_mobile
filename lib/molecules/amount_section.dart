@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kwartz_mobile/blocs/transaction_bloc.dart';
-import 'package:kwartz_mobile/providers/new_transaction.dart';
-import 'package:provider/provider.dart';
+import '../blocs/transaction_bloc.dart';
 
 class TotalAmountSection extends StatelessWidget {
   @override

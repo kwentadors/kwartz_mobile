@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import '../../blocs/transaction_bloc.dart';
 import '../../molecules/amount_section.dart';
-import '../../providers/new_transaction.dart';
 import '../../molecules/transaction_date_picker.dart';
 import '../../molecules/journal_entry.dart';
 
@@ -68,25 +66,20 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
             key: _formKey,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ChangeNotifierProvider<NewTransaction>(
-                create: (_) => NewTransaction.create(),
-                builder: (context, _) {
-                  return Column(
-                    children: <Widget>[
-                      TransactionDatePicker(),
-                      // DebitSection(),
-                      // CreditSection(),
-                      SizedBox(height: 16.0),
-                      SizedBox(height: 16.0),
-                      TotalAmountSection(),
-                      SizedBox(height: 8.0),
-                      RaisedButton(
-                        onPressed: () => saveForm(context),
-                        child: Text("Record"),
-                      )
-                    ],
-                  );
-                },
+              child: Column(
+                children: <Widget>[
+                  TransactionDatePicker(),
+                  DebitSection(),
+                  CreditSection(),
+                  SizedBox(height: 16.0),
+                  SizedBox(height: 16.0),
+                  TotalAmountSection(),
+                  SizedBox(height: 8.0),
+                  RaisedButton(
+                    onPressed: () => saveForm(context),
+                    child: Text("Record"),
+                  )
+                ],
               ),
             ),
           ),
@@ -96,15 +89,16 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
+    // TODO validation
     // if (!_formKey.currentState.validate()) {
     //   return;
     // }
 
     // _formKey.currentState.save();
 
-    var trxProvider = Provider.of<NewTransaction>(context, listen: false);
-    BlocProvider.of<TransactionBloc>(context)
-        .add(SaveTransaction(trxProvider.transaction));
+    var transactionBloc = BlocProvider.of<TransactionBloc>(context);
+    var transaction = transactionBloc.state.transaction;
+    transactionBloc.add(SaveTransaction(transaction));
   }
 }
 
@@ -124,7 +118,7 @@ class DebitSection extends StatelessWidget {
                 .asMap()
                 .entries
                 .map((entry) => JournalEntryWidget(
-                      key: ValueKey("CR-${entry.key}"),
+                      key: ValueKey(entry.key),
                       entry: entry.value,
                     ))).toList(),
             Container(
@@ -132,7 +126,8 @@ class DebitSection extends StatelessWidget {
               child: FlatButton.icon(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  trx.createDebitEntry();
+                  BlocProvider.of<TransactionBloc>(context)
+                      .add(AddDebitEntryEvent());
                 },
                 label: Text("Add debit entry"),
               ),
@@ -148,32 +143,33 @@ class CreditSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var sectionTitlePadding = SizedBox(height: 16.0);
+    var transaction =
+        BlocProvider.of<TransactionBloc>(context).state.transaction;
 
-    return Consumer<NewTransaction>(
-      builder: (context, transaction, _) => Column(
-        children: [
-          sectionTitlePadding,
-          SectionTitle('Credit'),
-          ...transaction.creditEntries
-              .asMap()
-              .entries
-              .map((entry) => JournalEntryWidget(
-                    key: ValueKey("CR-${entry.key}"),
-                    entry: entry.value,
-                  )),
-          Container(
-            alignment: Alignment.centerRight,
-            child: FlatButton.icon(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                transaction.createCreditEntry();
-              },
-              label: Text("Add credit entry"),
-            ),
+    return Column(
+      children: [
+        sectionTitlePadding,
+        SectionTitle('Credit'),
+        ...transaction.creditEntries
+            .asMap()
+            .entries
+            .map((entry) => JournalEntryWidget(
+                  key: ValueKey(entry.key),
+                  entry: entry.value,
+                )),
+        Container(
+          alignment: Alignment.centerRight,
+          child: FlatButton.icon(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              BlocProvider.of<TransactionBloc>(context)
+                  .add(AddCreditEntryEvent());
+            },
+            label: Text("Add credit entry"),
           ),
-          sectionTitlePadding,
-        ],
-      ),
+        ),
+        sectionTitlePadding,
+      ],
     );
   }
 }

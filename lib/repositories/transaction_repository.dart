@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 
-import './api.dart';
+import 'api.dart';
 import '../models/transaction.dart';
 
-class MovieRepository {
-  final formatter = DateFormat("y-MM-dd");
+class TransactionRepository {
+  static final formatter = DateFormat("y-MM-dd");
   final apiClient = ApiClient();
 
   Future<Transaction> save(Transaction transaction) async {

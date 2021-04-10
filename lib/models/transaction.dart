@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Transaction {
-  final DateTime transactionDate;
-  final String description;
-  final List<JournalEntry> debitEntries;
-  final List<JournalEntry> creditEntries;
+  DateTime transactionDate;
+  String description;
+  List<JournalEntry> debitEntries = <JournalEntry>[];
+  List<JournalEntry> creditEntries = <JournalEntry>[];
 
-  const Transaction({
+  Transaction({
     this.transactionDate,
     this.description,
     this.debitEntries,
@@ -19,22 +19,33 @@ class Transaction {
   double get creditAmount => creditEntries.fold(
       0, (previousValue, element) => previousValue + element.amount);
 
-  Transaction.initial()
-      : this(
-          transactionDate: DateTime.now(),
-          description: null,
-          debitEntries: <JournalEntry>[],
-          creditEntries: <JournalEntry>[],
-        );
+  static initial() {
+    var transaction = Transaction(
+      transactionDate: DateTime.now(),
+      description: null,
+      debitEntries: <JournalEntry>[],
+      creditEntries: <JournalEntry>[],
+    );
+    transaction.createDebitEntry();
+    transaction.createCreditEntry();
+
+    return transaction;
+  }
 
   JournalEntry createDebitEntry() {
-    var entry = JournalEntry(this);
+    if (debitEntries == null) {
+      debitEntries = <JournalEntry>[];
+    }
+    var entry = JournalEntry(this, JournalEntryType.DEBIT);
     debitEntries.add(entry);
     return entry;
   }
 
   JournalEntry createCreditEntry() {
-    var entry = JournalEntry(this);
+    if (creditEntries == null) {
+      creditEntries = <JournalEntry>[];
+    }
+    var entry = JournalEntry(this, JournalEntryType.CREDIT);
     creditEntries.add(entry);
     return entry;
   }
@@ -47,16 +58,39 @@ class Transaction {
   }) {
     return Transaction(
       transactionDate: transactionDate ?? this.transactionDate,
+      description: this.description,
+      debitEntries: this.debitEntries,
+      creditEntries: this.creditEntries,
     );
+  }
+
+  Transaction withNewDebitEntry() {
+    return copyWith()..createDebitEntry();
+  }
+
+  Transaction withNewCreditEntry() {
+    return copyWith()..createCreditEntry();
   }
 }
 
-class JournalEntry {
-  FinancialAccount account;
-  double amount = 0.0;
-  final Transaction transaction;
+enum JournalEntryType { CREDIT, DEBIT }
 
-  JournalEntry(this.transaction);
+class JournalEntry {
+  final Transaction transaction;
+  final JournalEntryType type;
+  FinancialAccount account;
+  double amount;
+
+  JournalEntry(this.transaction, this.type, {this.account, this.amount = 0.0});
+
+  JournalEntry copyWith({FinancialAccount account, double amount}) {
+    return JournalEntry(
+      transaction,
+      type,
+      account: account ?? this.account,
+      amount: amount ?? this.amount,
+    );
+  }
 }
 
 @immutable
@@ -69,4 +103,7 @@ class FinancialAccount {
   bool operator ==(Object other) {
     return other is FinancialAccount && name == other.name;
   }
+
+  @override
+  int get hashCode => name.hashCode;
 }
