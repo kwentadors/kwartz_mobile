@@ -4,8 +4,9 @@ import 'api.dart';
 import '../models/transaction.dart';
 
 class TransactionRepository {
-  static final formatter = DateFormat("y-MM-dd");
   final apiClient = ApiClient();
+
+  static final formatter = DateFormat("y-MM-dd");
 
   Future<Transaction> save(Transaction transaction) async {
     final requestBody = encode(transaction);

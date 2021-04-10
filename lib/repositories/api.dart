@@ -16,7 +16,7 @@ class ApiClient {
     String serializedContent = json.encode(body);
     var url = "$hostname$path";
 
-    log.fine("Sending request to $url with content: $serializedContent");
+    log.info("Sending request to $url with content: $serializedContent");
     var response = await http.post(
       url,
       headers: {
@@ -25,6 +25,8 @@ class ApiClient {
       },
       body: serializedContent,
     );
+    log.info(
+        "Received request from $url with status ${response.statusCode} and content: ${response.body}");
 
     return json.decode(response.body);
   }
