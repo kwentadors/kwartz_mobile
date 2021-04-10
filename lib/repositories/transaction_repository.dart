@@ -7,11 +7,11 @@ class TransactionRepository {
   final apiClient = ApiClient();
 
   static final formatter = DateFormat("y-MM-dd");
+  static final URL = "/api/v1/transactions/";
 
   Future<Transaction> save(Transaction transaction) async {
     final requestBody = encode(transaction);
-    var response =
-        await apiClient.post(path: "/api/v1/transactions/", body: requestBody);
+    var response = await apiClient.post(path: URL, body: requestBody);
 
     return decode(response);
   }
