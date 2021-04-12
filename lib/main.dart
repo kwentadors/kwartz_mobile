@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
+import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
 import 'package:logging/logging.dart';
 import './blocs/transaction_bloc.dart';
 import './screens/transactions/save_transaction_page.dart';
@@ -25,17 +26,23 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.pink[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider<TransactionBloc>(
-            create: (context) => TransactionBloc(),
-          ),
-          BlocProvider<FinancialAccountBloc>(
-            create: (context) => FinancialAccountBloc(),
-          )
-        ],
-        child: SaveTransactionPage(),
-      ),
+      home: MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<FinancialAccountRepository>(
+                create: (context) => FinancialAccountRepository())
+          ],
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<TransactionBloc>(
+                create: (context) => TransactionBloc(),
+              ),
+              BlocProvider<FinancialAccountBloc>(
+                create: (context) => FinancialAccountBloc(
+                    RepositoryProvider.of<FinancialAccountRepository>(context)),
+              )
+            ],
+            child: SaveTransactionPage(),
+          )),
     );
   }
 }

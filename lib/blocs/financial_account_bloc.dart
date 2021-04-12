@@ -10,9 +10,10 @@ part 'financial_account_state.dart';
 
 class FinancialAccountBloc
     extends Bloc<FinancialAccountEvent, FinancialAccountState> {
-  final _financialAccountRepository = FinancialAccountRepository();
+  final FinancialAccountRepository _financialAccountRepository;
 
-  FinancialAccountBloc() : super(PrebootState());
+  FinancialAccountBloc(this._financialAccountRepository)
+      : super(PrebootState());
 
   void boot() {
     add(BootEvent());
