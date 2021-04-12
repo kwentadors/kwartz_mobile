@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import '../repositories/financial_account_repository.dart';
 import '../models/transaction.dart';
 import 'package:meta/meta.dart';
@@ -14,10 +15,6 @@ class FinancialAccountBloc
 
   FinancialAccountBloc(this._financialAccountRepository)
       : super(PrebootState());
-
-  void boot() {
-    add(BootEvent());
-  }
 
   @override
   Stream<FinancialAccountState> mapEventToState(

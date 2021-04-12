@@ -1,16 +1,22 @@
 part of 'financial_account_bloc.dart';
 
 @immutable
-abstract class FinancialAccountState {
+abstract class FinancialAccountState extends Equatable {
   final List<FinancialAccount> accounts;
 
-  FinancialAccountState(this.accounts);
+  const FinancialAccountState(this.accounts);
 }
 
 class PrebootState extends FinancialAccountState {
-  PrebootState() : super(List.empty());
+  const PrebootState() : super(const <FinancialAccount>[]);
+
+  @override
+  List<Object> get props => [];
 }
 
 class ReadyState extends FinancialAccountState {
-  ReadyState(List<FinancialAccount> accounts) : super(accounts);
+  const ReadyState(List<FinancialAccount> accounts) : super(accounts);
+
+  @override
+  List<Object> get props => [accounts];
 }
