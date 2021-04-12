@@ -7,7 +7,7 @@ class TransactionRepository {
   final apiClient = ApiClient();
 
   static final formatter = DateFormat("y-MM-dd");
-  static const URL = "/api/v1/transactions/";
+  static const URL = "/api/v1/transactions";
 
   Future<Transaction> save(Transaction transaction) async {
     final requestBody = encode(transaction);
