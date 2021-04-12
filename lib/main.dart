@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider<FinancialAccountBloc>(
                 create: (context) => FinancialAccountBloc(
-                    RepositoryProvider.of<FinancialAccountRepository>(context)),
+                    context.read<FinancialAccountRepository>()),
               )
             ],
             child: SaveTransactionPage(),

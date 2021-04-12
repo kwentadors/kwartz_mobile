@@ -18,19 +18,13 @@ class _AccountNameInputState extends State<AccountNameInput> {
 
   @override
   Widget build(BuildContext context) {
-    List<FinancialAccount> accounts = [
-      FinancialAccount('Cash on Hand'),
-      FinancialAccount('Income'),
-      FinancialAccount('Expense - Personal')
-    ];
-
     return BlocBuilder<FinancialAccountBloc, FinancialAccountState>(
       builder: (context, state) {
         if (state is PrebootState) {
           BlocProvider.of<FinancialAccountBloc>(context).add(BootEvent());
-          // return CircularProgressIndicator();
-          return Text("Loading...");
+          return CircularProgressIndicator();
         }
+
         return DropdownButtonFormField<FinancialAccount>(
           value: this.widget.entry?.account,
           validator: (value) {

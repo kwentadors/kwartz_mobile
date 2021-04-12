@@ -21,10 +21,6 @@ class FinancialAccountRepository {
         accounts.map((e) => FinancialAccount(e['name'])));
   }
 
-  FinancialAccount _decodeObject(properties) {
-    return FinancialAccount(properties['name']);
-  }
-
   Future<List<FinancialAccount>> _fetchFromDatabase() async {
     var response = await apiClient.get(path: URL);
     return _decode(response['data']);
