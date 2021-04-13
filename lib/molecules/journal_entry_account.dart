@@ -21,8 +21,8 @@ class _AccountNameInputState extends State<AccountNameInput> {
     return BlocBuilder<FinancialAccountBloc, FinancialAccountState>(
       builder: (context, state) {
         if (state is PrebootState) {
-          BlocProvider.of<FinancialAccountBloc>(context).add(BootEvent());
-          return CircularProgressIndicator();
+          context.read<FinancialAccountBloc>().add(BootEvent());
+          return Center(child: CircularProgressIndicator());
         }
 
         return DropdownButtonFormField<FinancialAccount>(

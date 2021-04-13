@@ -3,13 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kwartz_mobile/models/transaction.dart';
 import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
 
 class MockFinancialAccountRepository extends Mock
     implements FinancialAccountRepository {}
 
-@GenerateMocks([FinancialAccount])
 void main() {
   FinancialAccountRepository financialAccountRepository;
 
@@ -40,6 +38,7 @@ void main() {
         act: (bloc) async => bloc.add(BootEvent()),
         expect: [
           ReadyState(accounts),
-        ]);
+        ],
+        verify: (_) => verify(financialAccountRepository.getAll()).called(1));
   });
 }
