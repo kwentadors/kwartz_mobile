@@ -57,15 +57,44 @@ class TransactionGroupHeader extends StatelessWidget {
       children: [
         Column(
           children: [
-            Text("April"),
-            Text("24"),
-            Text("2021"),
+            Text(
+              "APR",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[300],
+              ),
+            ),
+            Text(
+              "13",
+              style: TextStyle(
+                fontSize: 28,
+              ),
+            ),
+            Text(
+              "Tue",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[300],
+              ),
+            ),
           ],
         ),
         Column(
           children: [
-            Text("Amount"),
-            Text("25,360.92"),
+            Text(
+              "Amount",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[300],
+              ),
+            ),
+            Text(
+              "25,360.92",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[300],
+              ),
+            ),
           ],
         ),
       ],
