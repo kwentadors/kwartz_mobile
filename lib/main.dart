@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
 import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
+import 'package:kwartz_mobile/screens/transactions/list_transaction_page.dart';
 import 'package:logging/logging.dart';
 import './blocs/transaction_bloc.dart';
 import './screens/transactions/save_transaction_page.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Kwartz',
       // darkTheme: ThemeData.dark(),
       theme: ThemeData(
-        // brightness: Brightness.dark,
+        brightness: Brightness.dark,
         primaryColor: Colors.pink[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
                     context.read<FinancialAccountRepository>()),
               )
             ],
-            child: SaveTransactionPage(),
+            child: ListTransactionsPage(),
           )),
     );
   }
