@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Kwartz',
       // darkTheme: ThemeData.dark(),
       theme: ThemeData(
-        brightness: Brightness.dark,
+        // brightness: Brightness.dark,
         primaryColor: Colors.pink[400],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
