@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
+import '../modules/transaction/models/transaction.dart';
 
 import 'api.dart';
-import '../models/transaction.dart';
 
 class TransactionRepository {
   final apiClient = ApiClient();

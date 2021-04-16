@@ -1,4 +1,5 @@
-import '../models/transaction.dart';
+import '../modules/transaction/models/transaction.dart';
+
 import 'api.dart';
 
 class FinancialAccountRepository {

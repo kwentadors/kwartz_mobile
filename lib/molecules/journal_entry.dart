@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import '../modules/transaction/models/transaction.dart';
 import 'journal_entry_account.dart';
 import '../blocs/transaction_bloc.dart';
-import '../models/transaction.dart';
 
 class JournalEntryWidget extends StatelessWidget {
   final JournalEntry entry;

@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import '../modules/transaction/models/transaction.dart';
 import '../blocs/financial_account_bloc.dart';
 import '../blocs/transaction_bloc.dart';
-import '../models/transaction.dart';
 
 class AccountNameInput extends StatefulWidget {
   final JournalEntry entry;
