@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../modules/transaction/models/transaction.dart';
-import '../repositories/financial_account_repository.dart';
+import '../modules/financial_account/repositories/financial_account_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'financial_account_event.dart';

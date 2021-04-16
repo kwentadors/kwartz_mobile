@@ -1,6 +1,6 @@
-import '../modules/transaction/models/transaction.dart';
+import '../../transaction/models/transaction.dart';
 
-import 'api.dart';
+import '../../../repositories/api.dart';
 
 class FinancialAccountRepository {
   final apiClient = ApiClient();

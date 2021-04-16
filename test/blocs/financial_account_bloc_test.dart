@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kwartz_mobile/modules/transaction/models/transaction.dart';
-import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
+import 'package:kwartz_mobile/modules/financial_account/repositories/financial_account_repository.dart';
 import 'package:mockito/mockito.dart';
 import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
 

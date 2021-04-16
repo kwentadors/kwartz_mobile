@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
-import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
+import 'package:kwartz_mobile/modules/financial_account/repositories/financial_account_repository.dart';
 import 'modules/transaction/screens/list_transaction_page.dart';
 import 'modules/transaction/screens/save_transaction_page.dart';
 import 'package:logging/logging.dart';
