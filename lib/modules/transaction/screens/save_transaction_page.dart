@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:kwartz_mobile/modules/financial_account/blocs/financial_account_bloc.dart';
 import '../../../atoms/date_picker.dart';
-import '../../../blocs/financial_account_bloc.dart';
 import '../models/transaction.dart';
 import '../blocs/transaction_bloc.dart';
 
