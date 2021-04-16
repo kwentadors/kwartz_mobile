@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
+import '../blocs/financial_account_bloc.dart';
 import '../blocs/transaction_bloc.dart';
 import '../models/transaction.dart';
 

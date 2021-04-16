@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwartz_mobile/blocs/financial_account_bloc.dart';
 import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
+import 'package:kwartz_mobile/modules/transaction/screens/list_transaction_page.dart';
 import 'package:logging/logging.dart';
 import './blocs/transaction_bloc.dart';
-import './screens/transactions/save_transaction_page.dart';
 
 void main() {
   Logger.root.level = Level.ALL;
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
                     context.read<FinancialAccountRepository>()),
               )
             ],
-            child: SaveTransactionPage(),
+            child: ListTransactionsPage(),
           )),
     );
   }
