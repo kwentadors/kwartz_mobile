@@ -5,6 +5,12 @@ import '../../models/transaction.dart';
 class ListTransactionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final grouper = DayGrouper();
+    final List<Transaction> transactions = _fetchTransactions();
+
+    final groupedTransactions = grouper.group(transactions);
+    final keys = groupedTransactions.keys.toList();
+
     return Scaffold(
       appBar: AppBar(title: Text("Transactions")),
       body: Column(
@@ -24,8 +30,11 @@ class ListTransactionsPage extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) => TransactionGroup(),
-              itemCount: 5,
+              itemBuilder: (context, index) {
+                final key = keys[index];
+                return TransactionGroup(key, groupedTransactions[key]);
+              },
+              itemCount: keys.length,
             ),
           )
         ],
@@ -34,6 +43,7 @@ class ListTransactionsPage extends StatelessWidget {
   }
 
   List<Transaction> _fetchTransactions() {
+    // TODO implementation
     var transaction1 = Transaction()
       ..transactionDate = DateTime.now()
       ..description = "Some transaction not to remember";
@@ -50,37 +60,47 @@ class ListTransactionsPage extends StatelessWidget {
       ..account = FinancialAccount("Savings - Unionbank")
       ..amount = 2643.93;
 
+    var transaction2 = Transaction()..transactionDate = DateTime.now();
+
+    transaction2.createDebitEntry()
+      ..account = FinancialAccount("Expense - Personal")
+      ..amount = 2000.00;
+
+    transaction2.createCreditEntry()
+      ..account = FinancialAccount("Savings - BDO")
+      ..amount = 2000.00;
+
+    var transaction3 = Transaction()
+      ..transactionDate = DateTime.parse("2021-04-09");
+
+    transaction3.createDebitEntry()
+      ..account = FinancialAccount("Savings - BDO")
+      ..amount = 11253.72;
+
+    transaction3.createCreditEntry()
+      ..account = FinancialAccount("Income - Arcanys")
+      ..amount = 11253.72;
+
     return <Transaction>[
       transaction1,
+      transaction2,
+      transaction3,
     ];
   }
 }
 
 class TransactionGroup extends StatelessWidget {
-  const TransactionGroup({
+  final DateTime grouping;
+  final List<Transaction> transactions;
+
+  const TransactionGroup(
+    this.grouping,
+    this.transactions, {
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var transaction1 = Transaction()
-      ..transactionDate = DateTime.now()
-      ..description = "Some transaction1 not to remember";
-
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 2618.93;
-
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Expense - Bank Charges")
-      ..amount = 25.00;
-
-    transaction1.createCreditEntry()
-      ..account = FinancialAccount("Savings - Unionbank")
-      ..amount = 2643.93;
-
-    final today = DateTime.now();
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -101,9 +121,9 @@ class TransactionGroup extends StatelessWidget {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemBuilder: (context, index) =>
-                          JournalEntryWidget(transaction1),
+                          JournalEntryWidget(transactions[index]),
                       separatorBuilder: (_, __) => Divider(),
-                      itemCount: 3,
+                      itemCount: transactions.length,
                     ),
                   ),
                 ],
@@ -121,7 +141,7 @@ class TransactionGroup extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  today.day.toString(),
+                  grouping.day.toString(),
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.white,
@@ -129,7 +149,7 @@ class TransactionGroup extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  DateFormat('EEEE').format(today),
+                  DateFormat('EEEE').format(grouping),
                   style: TextStyle(
                     fontSize: 10,
                     color: Colors.grey[100],
@@ -188,25 +208,17 @@ class DayGrouper {
   DayGrouper();
 
   Map<DateTime, List<Transaction>> group(List<Transaction> transactions) {
-    var transaction1 = Transaction()
-      ..transactionDate = DateTime.now()
-      ..description = "Some transaction not to remember";
+    return transactions.fold({}, (Map result, transaction) {
+      var dateKey = DateFormat.yMMMMd()
+          .parse(DateFormat.yMMMMd().format(transaction.transactionDate));
 
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 2618.93;
+      if (!result.containsKey(dateKey)) {
+        result[dateKey] = <Transaction>[];
+      }
+      result[dateKey].add(transaction);
 
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Expense - Bank Charges")
-      ..amount = 25.00;
-
-    transaction1.createCreditEntry()
-      ..account = FinancialAccount("Savings - Unionbank")
-      ..amount = 2643.93;
-
-    return {
-      DateTime.now(): [transaction1],
-    };
+      return result;
+    });
   }
 }
 
@@ -247,7 +259,8 @@ class JournalEntryDebit extends StatelessWidget {
             Container(
               width: 90,
               child: Text(
-                journalEntry.amount.toStringAsFixed(2),
+                NumberFormat.simpleCurrency(decimalDigits: 2, name: "")
+                    .format(journalEntry.amount),
                 textAlign: TextAlign.end,
               ),
             ),
@@ -282,7 +295,8 @@ class JournalEntryCredit extends StatelessWidget {
               Container(
                 width: 90,
                 child: Text(
-                  journalEntry.amount.toStringAsFixed(2),
+                  NumberFormat.simpleCurrency(decimalDigits: 2, name: "")
+                      .format(journalEntry.amount),
                   textAlign: TextAlign.end,
                 ),
               )
