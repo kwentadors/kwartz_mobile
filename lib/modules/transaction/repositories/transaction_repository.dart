@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
-
-import 'api.dart';
+import '../../../utils/repositories/api.dart';
 import '../models/transaction.dart';
 
 class TransactionRepository {

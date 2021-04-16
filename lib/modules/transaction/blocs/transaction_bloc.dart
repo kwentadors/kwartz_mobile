@@ -9,7 +9,8 @@ part 'transaction_event.dart';
 part 'transaction_state.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-  final TransactionRepository _transactionRepository = new TransactionRepository();
+  final TransactionRepository _transactionRepository =
+      new TransactionRepository();
 
   TransactionBloc() : super(EditingTransactionState(Transaction.initial()));
 
