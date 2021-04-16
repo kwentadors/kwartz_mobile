@@ -5,7 +5,7 @@ import 'package:kwartz_mobile/repositories/financial_account_repository.dart';
 import 'modules/transaction/screens/list_transaction_page.dart';
 import 'modules/transaction/screens/save_transaction_page.dart';
 import 'package:logging/logging.dart';
-import './blocs/transaction_bloc.dart';
+import 'modules/transaction/blocs/transaction_bloc.dart';
 
 void main() {
   Logger.root.level = Level.ALL;
