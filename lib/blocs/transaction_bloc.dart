@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../modules/transaction/models/transaction.dart';
-import '../repositories/transaction_repository.dart';
+import '../modules/transaction/repositories/transaction_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'transaction_event.dart';
