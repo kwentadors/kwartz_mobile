@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../repositories/transaction_repository.dart';
 import '../blocs/list_transaction_bloc.dart';
-import '../blocs/transaction_bloc.dart';
 import '../models/transaction.dart';
 
 class ListTransactionsPage extends StatelessWidget {
@@ -11,7 +11,8 @@ class ListTransactionsPage extends StatelessWidget {
     final List<Transaction> transactions = _fetchTransactions();
 
     return BlocProvider<ListTransactionBloc>(
-      create: (context) => ListTransactionBloc(),
+      create: (context) =>
+          ListTransactionBloc(context.read<TransactionRepository>()),
       child: Scaffold(
         appBar: AppBar(title: Text("Transactions")),
         body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
@@ -27,7 +28,7 @@ class ListTransactionsPage extends StatelessWidget {
               );
             }
 
-            return TransactionList(transactions: transactions);
+            return TransactionList(transactions: state.transactions);
           },
         ),
       ),
