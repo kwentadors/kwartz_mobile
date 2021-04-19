@@ -1,43 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../blocs/list_transaction_bloc.dart';
+import '../blocs/transaction_bloc.dart';
 import '../models/transaction.dart';
 
 class ListTransactionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final grouper = DayGrouper();
     final List<Transaction> transactions = _fetchTransactions();
 
-    final groupedTransactions = grouper.group(transactions);
-    final keys = groupedTransactions.keys.toList();
+    return BlocProvider<ListTransactionBloc>(
+      create: (context) => ListTransactionBloc(),
+      child: Scaffold(
+        appBar: AppBar(title: Text("Transactions")),
+        body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
+          builder: (context, state) {
+            if (state is ListTransactionInitial) {
+              context.read<ListTransactionBloc>().add(FetchTransactionsEvent());
+              return Center(
+                child: Text("Initial state"),
+              );
+            } else if (state is ListTransactionLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-    return Scaffold(
-      appBar: AppBar(title: Text("Transactions")),
-      body: Column(
-        children: [
-          Container(
-            height: 35,
-            width: double.infinity,
-            child: Center(
-              child: Text(
-                "APRIL 2021",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            color: Theme.of(context).primaryColorLight,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                final key = keys[index];
-                return TransactionGroup(key, groupedTransactions[key]);
-              },
-              itemCount: keys.length,
-            ),
-          )
-        ],
+            return TransactionList(transactions: transactions);
+          },
+        ),
       ),
     );
   }
@@ -86,6 +78,47 @@ class ListTransactionsPage extends StatelessWidget {
       transaction2,
       transaction3,
     ];
+  }
+}
+
+class TransactionList extends StatelessWidget {
+  const TransactionList({Key key, @required this.transactions})
+      : super(key: key);
+
+  final List<Transaction> transactions;
+
+  @override
+  Widget build(BuildContext context) {
+    final grouper = DayGrouper();
+    final groupedTransactions = grouper.group(transactions);
+    final keys = groupedTransactions.keys.toList();
+
+    return Column(
+      children: [
+        Container(
+          height: 35,
+          width: double.infinity,
+          child: Center(
+            child: Text(
+              "APRIL 2021",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          color: Theme.of(context).primaryColorLight,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              final key = keys[index];
+              return TransactionGroup(key, groupedTransactions[key]);
+            },
+            itemCount: keys.length,
+          ),
+        )
+      ],
+    );
   }
 }
 

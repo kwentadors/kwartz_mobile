@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
                     context.read<FinancialAccountRepository>()),
               )
             ],
-            child: SaveTransactionPage(),
+            child: ListTransactionsPage(),
           )),
     );
   }
