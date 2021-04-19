@@ -15,6 +15,13 @@ class TransactionRepository {
     return decode(response);
   }
 
+  Future<List<Transaction>> fetchAll() async {
+    var response = await apiClient.get(path: URL);
+    var data = response['data'] as List;
+
+    return data.map((e) => decode(e)).toList();
+  }
+
   Map<String, Object> encode(Transaction transaction) {
     return {
       "transaction_date": formatter.format(transaction.transactionDate),
