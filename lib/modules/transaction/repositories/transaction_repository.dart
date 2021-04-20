@@ -28,10 +28,10 @@ class TransactionRepository {
       "amount": transaction.amount,
       "description": "Spent one-day millionaire",
       "debit": transaction.debitEntries
-          .map((e) => {"account_id": 1, "amount": e.amount})
+          .map((e) => {"account_id": e.account.id, "amount": e.amount})
           .toList(),
       "credit": transaction.creditEntries
-          .map((e) => {"account_id": 1, "amount": e.amount})
+          .map((e) => {"account_id": e.account.id, "amount": e.amount})
           .toList(),
     };
   }
@@ -43,13 +43,15 @@ class TransactionRepository {
 
     (properties['credit'] as List).forEach((element) {
       transaction.createCreditEntry()
-        ..account = FinancialAccount(element['account']['name'])
+        ..account = FinancialAccount(
+            element['account']['id'], element['account']['name'])
         ..amount = element['amount'].toDouble();
     });
 
     (properties['debit'] as List).forEach((element) {
       transaction.createDebitEntry()
-        ..account = FinancialAccount(element['account']['name'])
+        ..account = FinancialAccount(
+            element['account']['id'], element['account']['name'])
         ..amount = element['amount'].toDouble();
     });
 

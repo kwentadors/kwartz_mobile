@@ -18,7 +18,7 @@ class FinancialAccountRepository {
 
   List<FinancialAccount> _decode(accounts) {
     return new List<FinancialAccount>.from(
-        accounts.map((e) => FinancialAccount(e['name'])));
+        accounts.map((e) => FinancialAccount(e['id'], e['name'])));
   }
 
   Future<List<FinancialAccount>> _fetchFromDatabase() async {

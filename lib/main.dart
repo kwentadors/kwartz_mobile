@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwartz_mobile/modules/transaction/screens/save_transaction_page.dart';
 import 'modules/transaction/repositories/transaction_repository.dart';
 import 'modules/financial_account/blocs/financial_account_bloc.dart';
 import 'modules/financial_account/repositories/financial_account_repository.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
               )
             ],
             child: ListTransactionsPage(),
+            // child: SaveTransactionPage(),
           )),
     );
   }
