@@ -70,7 +70,11 @@ class TransactionList extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (context, index) {
               final key = keys[index];
-              return TransactionGroup(key, groupedTransactions[key]);
+              return TransactionGroup(
+                key,
+                groupedTransactions[key]['transactions'] as List<Transaction>,
+                groupedTransactions[key]['amount'],
+              );
             },
             itemCount: keys.length,
           ),
@@ -83,10 +87,12 @@ class TransactionList extends StatelessWidget {
 class TransactionGroup extends StatelessWidget {
   final DateTime grouping;
   final List<Transaction> transactions;
+  final double amount;
 
   const TransactionGroup(
     this.grouping,
-    this.transactions, {
+    this.transactions,
+    this.amount, {
     Key key,
   }) : super(key: key);
 
@@ -102,7 +108,7 @@ class TransactionGroup extends StatelessWidget {
             child: Card(
               child: Column(
                 children: [
-                  TransactionGroupHeader(DateTime.now()),
+                  TransactionGroupHeader(DateTime.now(), amount),
                   Divider(
                     height: 16,
                     color: Colors.black,
@@ -158,9 +164,11 @@ class TransactionGroup extends StatelessWidget {
 
 class TransactionGroupHeader extends StatelessWidget {
   final DateTime dateTime;
+  final double amount;
 
   const TransactionGroupHeader(
-    this.dateTime, {
+    this.dateTime,
+    this.amount, {
     Key key,
   }) : super(key: key);
 
@@ -183,7 +191,8 @@ class TransactionGroupHeader extends StatelessWidget {
               ),
             ),
             Text(
-              "25,360.92",
+              NumberFormat.simpleCurrency(decimalDigits: 2, name: "")
+                  .format(amount),
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -198,18 +207,26 @@ class TransactionGroupHeader extends StatelessWidget {
 class DayGrouper {
   DayGrouper();
 
-  Map<DateTime, List<Transaction>> group(List<Transaction> transactions) {
-    return transactions.fold({}, (Map result, transaction) {
+  Map<DateTime, dynamic> group(List<Transaction> transactions) {
+    var result = transactions.fold({}, (Map result, transaction) {
       var dateKey = DateFormat.yMMMMd()
           .parse(DateFormat.yMMMMd().format(transaction.transactionDate));
 
       if (!result.containsKey(dateKey)) {
-        result[dateKey] = <Transaction>[];
+        result[dateKey] = {};
+        result[dateKey]['transactions'] = <Transaction>[];
       }
-      result[dateKey].add(transaction);
+      result[dateKey]['transactions'].add(transaction);
 
       return result;
     });
+
+    result.forEach((key, value) {
+      value['amount'] = (value['transactions'] as List<Transaction>)
+          .fold(0, (sum, trx) => sum + trx.amount);
+    });
+
+    return Map<DateTime, dynamic>.from(result);
   }
 }
 
