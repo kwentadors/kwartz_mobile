@@ -44,8 +44,12 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final grouper = DayGrouper();
-    final groupedTransactions = grouper.group(transactions);
-    final keys = groupedTransactions.keys.toList();
+    final filter = MonthFilter();
+
+    final groupedTransactions = grouper.group(filter.filter(transactions));
+    var keys = groupedTransactions.keys.toList();
+    keys.sort();
+    keys = keys.reversed.toList();
 
     return Column(
       children: [
@@ -206,6 +210,12 @@ class DayGrouper {
 
       return result;
     });
+  }
+}
+
+class MonthFilter {
+  List<Transaction> filter(List<Transaction> transactions) {
+    return transactions.where((trx) => trx.transactionDate.month == 4).toList();
   }
 }
 
