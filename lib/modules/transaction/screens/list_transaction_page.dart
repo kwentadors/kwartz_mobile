@@ -8,11 +8,10 @@ import '../models/transaction.dart';
 class ListTransactionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final List<Transaction> transactions = _fetchTransactions();
-
     return BlocProvider<ListTransactionBloc>(
-      create: (context) =>
-          ListTransactionBloc(context.read<TransactionRepository>()),
+      create: (context) => ListTransactionBloc(
+        context.read<TransactionRepository>(),
+      ),
       child: Scaffold(
         appBar: AppBar(title: Text("Transactions")),
         body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
@@ -33,52 +32,6 @@ class ListTransactionsPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<Transaction> _fetchTransactions() {
-    // TODO implementation
-    var transaction1 = Transaction()
-      ..transactionDate = DateTime.now()
-      ..description = "Some transaction not to remember";
-
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 2618.93;
-
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Expense - Bank Charges")
-      ..amount = 25.00;
-
-    transaction1.createCreditEntry()
-      ..account = FinancialAccount("Savings - Unionbank")
-      ..amount = 2643.93;
-
-    var transaction2 = Transaction()..transactionDate = DateTime.now();
-
-    transaction2.createDebitEntry()
-      ..account = FinancialAccount("Expense - Personal")
-      ..amount = 2000.00;
-
-    transaction2.createCreditEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 2000.00;
-
-    var transaction3 = Transaction()
-      ..transactionDate = DateTime.parse("2021-04-09");
-
-    transaction3.createDebitEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 11253.72;
-
-    transaction3.createCreditEntry()
-      ..account = FinancialAccount("Income - Arcanys")
-      ..amount = 11253.72;
-
-    return <Transaction>[
-      transaction1,
-      transaction2,
-      transaction3,
-    ];
   }
 }
 
