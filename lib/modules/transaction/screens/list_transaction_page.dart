@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:kwartz_mobile/utils/router.dart';
 import '../repositories/transaction_repository.dart';
 import '../blocs/list_transaction_bloc.dart';
 import '../models/transaction.dart';
@@ -28,6 +29,14 @@ class ListTransactionsPage extends StatelessWidget {
             }
 
             return TransactionList(transactions: state.transactions);
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () {
+            Navigator.pushNamed(context, Routes.TransactionNew);
+            print("go to add transaction page");
           },
         ),
       ),
