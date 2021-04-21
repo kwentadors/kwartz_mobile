@@ -95,9 +95,10 @@ class JournalEntry {
 
 @immutable
 class FinancialAccount {
+  final int id;
   final String name;
 
-  FinancialAccount(this.name);
+  FinancialAccount(this.id, this.name);
 
   @override
   bool operator ==(Object other) {

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwartz_mobile/modules/transaction/screens/save_transaction_page.dart';
+import 'modules/transaction/repositories/transaction_repository.dart';
 import 'modules/financial_account/blocs/financial_account_bloc.dart';
 import 'modules/financial_account/repositories/financial_account_repository.dart';
 import 'modules/transaction/screens/list_transaction_page.dart';
-import 'modules/transaction/screens/save_transaction_page.dart';
 import 'modules/transaction/blocs/transaction_bloc.dart';
 import 'package:logging/logging.dart';
 
@@ -30,7 +31,9 @@ class MyApp extends StatelessWidget {
       home: MultiRepositoryProvider(
           providers: [
             RepositoryProvider<FinancialAccountRepository>(
-                create: (context) => FinancialAccountRepository())
+                create: (context) => FinancialAccountRepository()),
+            RepositoryProvider<TransactionRepository>(
+                create: (context) => TransactionRepository()),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -42,7 +45,8 @@ class MyApp extends StatelessWidget {
                     context.read<FinancialAccountRepository>()),
               )
             ],
-            child: SaveTransactionPage(),
+            child: ListTransactionsPage(),
+            // child: SaveTransactionPage(),
           )),
     );
   }

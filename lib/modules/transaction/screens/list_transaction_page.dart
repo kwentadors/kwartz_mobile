@@ -1,101 +1,98 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../repositories/transaction_repository.dart';
+import '../blocs/list_transaction_bloc.dart';
 import '../models/transaction.dart';
 
 class ListTransactionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final grouper = DayGrouper();
-    final List<Transaction> transactions = _fetchTransactions();
+    return BlocProvider<ListTransactionBloc>(
+      create: (context) => ListTransactionBloc(
+        context.read<TransactionRepository>(),
+      ),
+      child: Scaffold(
+        appBar: AppBar(title: Text("Transactions")),
+        body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
+          builder: (context, state) {
+            if (state is ListTransactionInitial) {
+              context.read<ListTransactionBloc>().add(FetchTransactionsEvent());
+              return Center(
+                child: Text("Initial state"),
+              );
+            } else if (state is ListTransactionLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-    final groupedTransactions = grouper.group(transactions);
-    final keys = groupedTransactions.keys.toList();
-
-    return Scaffold(
-      appBar: AppBar(title: Text("Transactions")),
-      body: Column(
-        children: [
-          Container(
-            height: 35,
-            width: double.infinity,
-            child: Center(
-              child: Text(
-                "APRIL 2021",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            color: Theme.of(context).primaryColorLight,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                final key = keys[index];
-                return TransactionGroup(key, groupedTransactions[key]);
-              },
-              itemCount: keys.length,
-            ),
-          )
-        ],
+            return TransactionList(transactions: state.transactions);
+          },
+        ),
       ),
     );
   }
+}
 
-  List<Transaction> _fetchTransactions() {
-    // TODO implementation
-    var transaction1 = Transaction()
-      ..transactionDate = DateTime.now()
-      ..description = "Some transaction not to remember";
+class TransactionList extends StatelessWidget {
+  const TransactionList({Key key, @required this.transactions})
+      : super(key: key);
 
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 2618.93;
+  final List<Transaction> transactions;
 
-    transaction1.createDebitEntry()
-      ..account = FinancialAccount("Expense - Bank Charges")
-      ..amount = 25.00;
+  @override
+  Widget build(BuildContext context) {
+    final grouper = DayGrouper();
+    final filter = MonthFilter();
 
-    transaction1.createCreditEntry()
-      ..account = FinancialAccount("Savings - Unionbank")
-      ..amount = 2643.93;
+    final groupedTransactions = grouper.group(filter.filter(transactions));
+    var keys = groupedTransactions.keys.toList();
+    keys.sort();
+    keys = keys.reversed.toList();
 
-    var transaction2 = Transaction()..transactionDate = DateTime.now();
-
-    transaction2.createDebitEntry()
-      ..account = FinancialAccount("Expense - Personal")
-      ..amount = 2000.00;
-
-    transaction2.createCreditEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 2000.00;
-
-    var transaction3 = Transaction()
-      ..transactionDate = DateTime.parse("2021-04-09");
-
-    transaction3.createDebitEntry()
-      ..account = FinancialAccount("Savings - BDO")
-      ..amount = 11253.72;
-
-    transaction3.createCreditEntry()
-      ..account = FinancialAccount("Income - Arcanys")
-      ..amount = 11253.72;
-
-    return <Transaction>[
-      transaction1,
-      transaction2,
-      transaction3,
-    ];
+    return Column(
+      children: [
+        Container(
+          height: 35,
+          width: double.infinity,
+          child: Center(
+            child: Text(
+              "APRIL 2021",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          color: Theme.of(context).primaryColorLight,
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              final key = keys[index];
+              return TransactionGroup(
+                key,
+                groupedTransactions[key]['transactions'] as List<Transaction>,
+                groupedTransactions[key]['amount'],
+              );
+            },
+            itemCount: keys.length,
+          ),
+        )
+      ],
+    );
   }
 }
 
 class TransactionGroup extends StatelessWidget {
   final DateTime grouping;
   final List<Transaction> transactions;
+  final double amount;
 
   const TransactionGroup(
     this.grouping,
-    this.transactions, {
+    this.transactions,
+    this.amount, {
     Key key,
   }) : super(key: key);
 
@@ -111,7 +108,7 @@ class TransactionGroup extends StatelessWidget {
             child: Card(
               child: Column(
                 children: [
-                  TransactionGroupHeader(DateTime.now()),
+                  TransactionGroupHeader(DateTime.now(), amount),
                   Divider(
                     height: 16,
                     color: Colors.black,
@@ -167,9 +164,11 @@ class TransactionGroup extends StatelessWidget {
 
 class TransactionGroupHeader extends StatelessWidget {
   final DateTime dateTime;
+  final double amount;
 
   const TransactionGroupHeader(
-    this.dateTime, {
+    this.dateTime,
+    this.amount, {
     Key key,
   }) : super(key: key);
 
@@ -192,7 +191,8 @@ class TransactionGroupHeader extends StatelessWidget {
               ),
             ),
             Text(
-              "25,360.92",
+              NumberFormat.simpleCurrency(decimalDigits: 2, name: "")
+                  .format(amount),
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -207,18 +207,32 @@ class TransactionGroupHeader extends StatelessWidget {
 class DayGrouper {
   DayGrouper();
 
-  Map<DateTime, List<Transaction>> group(List<Transaction> transactions) {
-    return transactions.fold({}, (Map result, transaction) {
+  Map<DateTime, dynamic> group(List<Transaction> transactions) {
+    var result = transactions.fold({}, (Map result, transaction) {
       var dateKey = DateFormat.yMMMMd()
           .parse(DateFormat.yMMMMd().format(transaction.transactionDate));
 
       if (!result.containsKey(dateKey)) {
-        result[dateKey] = <Transaction>[];
+        result[dateKey] = {};
+        result[dateKey]['transactions'] = <Transaction>[];
       }
-      result[dateKey].add(transaction);
+      result[dateKey]['transactions'].add(transaction);
 
       return result;
     });
+
+    result.forEach((key, value) {
+      value['amount'] = (value['transactions'] as List<Transaction>)
+          .fold(0, (sum, trx) => sum + trx.amount);
+    });
+
+    return Map<DateTime, dynamic>.from(result);
+  }
+}
+
+class MonthFilter {
+  List<Transaction> filter(List<Transaction> transactions) {
+    return transactions.where((trx) => trx.transactionDate.month == 4).toList();
   }
 }
 
