@@ -23,9 +23,10 @@ class ListTransactionsPage extends StatelessWidget {
                 child: Text("Initial state"),
               );
             } else if (state is ListTransactionLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+              return LoadingTransactionList();
+              // return Center(
+              //   child: CircularProgressIndicator(),
+              // );
             } else if (state is ListTransactionReady) {
               return TransactionList(transactions: state.transactions);
             } else {
@@ -45,6 +46,24 @@ class ListTransactionsPage extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class LoadingTransactionList extends StatelessWidget {
+  const LoadingTransactionList({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        MonthlyGroupHeader(),
+        Expanded(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ],
     );
   }
 }

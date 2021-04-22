@@ -26,6 +26,7 @@ class ListTransactionBloc
     } else if (event is UpdateDateFilterEvent) {
       yield ListTransactionLoading(event.dateFilter);
 
+      Future.delayed(Duration(seconds: 5));
       List<Transaction> transactions = List.empty();
       yield ListTransactionReady(event.dateFilter, transactions);
     } else {

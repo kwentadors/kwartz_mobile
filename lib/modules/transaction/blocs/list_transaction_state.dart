@@ -25,7 +25,7 @@ class ListTransactionLoading extends ListTransactionState {
 class ListTransactionReady extends ListTransactionState {
   final List<Transaction> transactions;
 
-  ListTransactionReady(DateTime dateFilter, List<Transaction> this.transactions)
+  ListTransactionReady(DateTime dateFilter, this.transactions)
       : super(dateFilter);
 
   @override
