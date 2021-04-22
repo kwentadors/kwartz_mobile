@@ -62,19 +62,7 @@ class TransactionList extends StatelessWidget {
 
     return Column(
       children: [
-        Container(
-          height: 35,
-          width: double.infinity,
-          child: Center(
-            child: Text(
-              "APRIL 2021",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          color: Theme.of(context).primaryColorLight,
-        ),
+        MonthlyGroupHeader(),
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, index) {
@@ -89,6 +77,67 @@ class TransactionList extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class MonthlyGroupHeader extends StatelessWidget {
+  const MonthlyGroupHeader({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // var bloc = context.read<ListTransactionBloc>();
+    return BlocBuilder<ListTransactionBloc, ListTransactionState>(
+      builder: (context, state) {
+        return Container(
+          height: 45,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 25,
+                    child: FlatButton(
+                      padding: EdgeInsets.zero,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.chevron_left),
+                      ),
+                      onPressed: () {
+                        print("Month changed previous!");
+                      },
+                    ),
+                  ),
+                  Text(
+                    "${state.monthName} ${state.year}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    width: 25,
+                    child: FlatButton(
+                      padding: EdgeInsets.zero,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(Icons.chevron_right),
+                      ),
+                      onPressed: () {
+                        print("Month changed next!");
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          color: Theme.of(context).primaryColorLight,
+        );
+      },
     );
   }
 }
