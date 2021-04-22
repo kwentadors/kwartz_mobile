@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kwartz_mobile/modules/transaction/screens/save_transaction_page.dart';
+import '../modules/transaction/screens/save_transaction_page.dart';
 import '../modules/transaction/screens/list_transaction_page.dart';
 
 class Routes {
@@ -14,9 +14,8 @@ class KwartzRouter {
     switch (settings.name) {
       case Routes.TransactionList:
         return MaterialPageRoute(builder: (_) => ListTransactionsPage());
-
       case Routes.TransactionNew:
-        return MaterialPageRoute(builder: (_) => SaveTransactionPage());
+        return _slideFromRight(SaveTransactionPage());
 
       default:
         return MaterialPageRoute(
@@ -27,5 +26,24 @@ class KwartzRouter {
           ),
         );
     }
+  }
+
+  static PageRouteBuilder _slideFromRight(SaveTransactionPage page) {
+    return PageRouteBuilder(
+      transitionDuration: Duration(milliseconds: 300),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+    );
   }
 }

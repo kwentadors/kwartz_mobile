@@ -26,7 +26,7 @@ class TransactionRepository {
     return {
       "transaction_date": formatter.format(transaction.transactionDate),
       "amount": transaction.amount,
-      "description": "Spent one-day millionaire",
+      "description": transaction.description,
       "debit": transaction.debitEntries
           .map((e) => {"account_id": e.account.id, "amount": e.amount})
           .toList(),
