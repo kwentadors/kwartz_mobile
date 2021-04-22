@@ -17,9 +17,9 @@ void main() {
 
   group('FinancialAccountBloc', () {
     final accounts = [
-      FinancialAccount('Cash'),
-      FinancialAccount('Expense'),
-      FinancialAccount('Capital'),
+      FinancialAccount(1, 'Cash'),
+      FinancialAccount(2, 'Expense'),
+      FinancialAccount(3, 'Capital'),
     ];
 
     test('should initialize to PrebootState', () {
