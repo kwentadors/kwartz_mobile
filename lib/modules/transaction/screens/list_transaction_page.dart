@@ -26,9 +26,14 @@ class ListTransactionsPage extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(),
               );
+            } else if (state is ListTransactionReady) {
+              return TransactionList(transactions: state.transactions);
+            } else {
+              return Center(
+                child: Text(
+                    "Unable to handle bloc state: ${state.runtimeType.toString()}"),
+              );
             }
-
-            return TransactionList(transactions: state.transactions);
           },
         ),
         floatingActionButton: FloatingActionButton(
@@ -88,7 +93,6 @@ class MonthlyGroupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var bloc = context.read<ListTransactionBloc>();
     return BlocBuilder<ListTransactionBloc, ListTransactionState>(
       builder: (context, state) {
         return Container(
@@ -109,6 +113,13 @@ class MonthlyGroupHeader extends StatelessWidget {
                       ),
                       onPressed: () {
                         print("Month changed previous!");
+                        var dateFilter = state.dateFilter;
+                        var previousDateFilter = DateTime(dateFilter.year,
+                            dateFilter.month - 1, dateFilter.day);
+
+                        context
+                            .read<ListTransactionBloc>()
+                            .add(UpdateDateFilterEvent(previousDateFilter));
                       },
                     ),
                   ),
@@ -128,6 +139,13 @@ class MonthlyGroupHeader extends StatelessWidget {
                       ),
                       onPressed: () {
                         print("Month changed next!");
+                        var dateFilter = state.dateFilter;
+                        var nextDateFilter = DateTime(dateFilter.year,
+                            dateFilter.month + 1, dateFilter.day);
+
+                        context
+                            .read<ListTransactionBloc>()
+                            .add(UpdateDateFilterEvent(nextDateFilter));
                       },
                     ),
                   ),

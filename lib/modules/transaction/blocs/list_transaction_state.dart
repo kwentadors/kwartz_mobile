@@ -1,31 +1,33 @@
 part of 'list_transaction_bloc.dart';
 
 abstract class ListTransactionState extends Equatable {
-  DateTime _dateFilter;
-  final List<Transaction> transactions;
+  final DateTime dateFilter;
 
-  ListTransactionState(this.transactions) {
-    this._dateFilter = DateTime.now();
-  }
+  ListTransactionState(DateTime this.dateFilter);
 
   @override
-  List<Object> get props => [transactions];
+  List<Object> get props => [dateFilter];
 
-  String get monthName => DateFormat.MMMM().format(this._dateFilter);
-  String get year => DateFormat.y().format(this._dateFilter);
+  String get monthName => DateFormat.MMMM().format(this.dateFilter);
+  String get year => DateFormat.y().format(this.dateFilter);
 
   static ListTransactionState get initial => ListTransactionInitial();
 }
 
 class ListTransactionInitial extends ListTransactionState {
-  ListTransactionInitial() : super(null);
+  ListTransactionInitial() : super(DateTime.now());
 }
 
 class ListTransactionLoading extends ListTransactionState {
-  ListTransactionLoading() : super(null);
+  ListTransactionLoading(DateTime dateFilter) : super(dateFilter);
 }
 
 class ListTransactionReady extends ListTransactionState {
-  ListTransactionReady(List<Transaction> transactions)
-      : super(List.unmodifiable(transactions));
+  final List<Transaction> transactions;
+
+  ListTransactionReady(DateTime dateFilter, List<Transaction> this.transactions)
+      : super(dateFilter);
+
+  @override
+  List<Object> get props => super.props + [transactions];
 }

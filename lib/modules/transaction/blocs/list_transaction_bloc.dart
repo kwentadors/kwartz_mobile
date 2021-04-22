@@ -20,9 +20,16 @@ class ListTransactionBloc
     ListTransactionEvent event,
   ) async* {
     if (event is FetchTransactionsEvent) {
-      yield ListTransactionLoading();
+      yield ListTransactionLoading(state.dateFilter);
       List<Transaction> transactions = await repository.fetchAll();
-      yield ListTransactionReady(transactions);
+      yield ListTransactionReady(state.dateFilter, transactions);
+    } else if (event is UpdateDateFilterEvent) {
+      yield ListTransactionLoading(event.dateFilter);
+
+      List<Transaction> transactions = List.empty();
+      yield ListTransactionReady(event.dateFilter, transactions);
+    } else {
+      throw Exception("Unhandled event!");
     }
   }
 }

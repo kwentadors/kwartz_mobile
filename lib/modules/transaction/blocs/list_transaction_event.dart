@@ -8,3 +8,9 @@ abstract class ListTransactionEvent extends Equatable {
 }
 
 class FetchTransactionsEvent extends ListTransactionEvent {}
+
+class UpdateDateFilterEvent extends ListTransactionEvent {
+  final DateTime dateFilter;
+
+  UpdateDateFilterEvent(this.dateFilter);
+}
