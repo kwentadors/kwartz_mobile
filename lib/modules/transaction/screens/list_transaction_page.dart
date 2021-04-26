@@ -114,6 +114,30 @@ class MonthlyGroupHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ListTransactionBloc, ListTransactionState>(
       builder: (context, state) {
+        var previousButton = FlatButton(
+          padding: EdgeInsets.zero,
+          child:
+              Text("<< ${state.previousMonthName} ${state.previousMonthYear}"),
+          onPressed: () {
+            context
+                .read<ListTransactionBloc>()
+                .add(UpdateDateFilterEvent(state.previousMonth));
+          },
+        );
+
+        var nextButton = FlatButton(
+          padding: EdgeInsets.zero,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("${state.nextMonthName} ${state.nextMonthYear} >>"),
+          ),
+          onPressed: () {
+            context
+                .read<ListTransactionBloc>()
+                .add(UpdateDateFilterEvent(state.nextMonth));
+          },
+        );
+
         return Container(
           height: 45,
           width: double.infinity,
@@ -122,52 +146,17 @@ class MonthlyGroupHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 25,
-                    child: FlatButton(
-                      padding: EdgeInsets.zero,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.chevron_left),
-                      ),
-                      onPressed: () {
-                        print("Month changed previous!");
-                        var dateFilter = state.dateFilter;
-                        var previousDateFilter = DateTime(dateFilter.year,
-                            dateFilter.month - 1, dateFilter.day);
-
-                        context
-                            .read<ListTransactionBloc>()
-                            .add(UpdateDateFilterEvent(previousDateFilter));
-                      },
-                    ),
-                  ),
+                  previousButton,
+                  SizedBox(width: 15),
                   Text(
                     "${state.monthName} ${state.year}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
                     ),
                   ),
-                  Container(
-                    width: 25,
-                    child: FlatButton(
-                      padding: EdgeInsets.zero,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Icon(Icons.chevron_right),
-                      ),
-                      onPressed: () {
-                        print("Month changed next!");
-                        var dateFilter = state.dateFilter;
-                        var nextDateFilter = DateTime(dateFilter.year,
-                            dateFilter.month + 1, dateFilter.day);
-
-                        context
-                            .read<ListTransactionBloc>()
-                            .add(UpdateDateFilterEvent(nextDateFilter));
-                      },
-                    ),
-                  ),
+                  SizedBox(width: 15),
+                  nextButton,
                 ],
               ),
             ],
