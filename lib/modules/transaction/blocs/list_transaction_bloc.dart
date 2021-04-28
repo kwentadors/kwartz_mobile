@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import '../repositories/transaction_repository.dart';
 import '../models/transaction.dart';
 
@@ -19,9 +20,16 @@ class ListTransactionBloc
     ListTransactionEvent event,
   ) async* {
     if (event is FetchTransactionsEvent) {
-      yield ListTransactionLoading();
+      yield ListTransactionLoading(state.dateFilter);
       List<Transaction> transactions = await repository.fetchAll();
-      yield ListTransactionReady(transactions);
+      yield ListTransactionReady(state.dateFilter, transactions);
+    } else if (event is UpdateDateFilterEvent) {
+      yield ListTransactionLoading(event.dateFilter);
+      List<Transaction> transactions =
+          await repository.fetchByMonthAndYear(event.dateFilter);
+      yield ListTransactionReady(event.dateFilter, transactions);
+    } else {
+      throw Exception("Unhandled event!");
     }
   }
 }

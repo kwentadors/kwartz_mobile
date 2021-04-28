@@ -23,12 +23,15 @@ class ListTransactionsPage extends StatelessWidget {
                 child: Text("Initial state"),
               );
             } else if (state is ListTransactionLoading) {
+              return LoadingTransactionList();
+            } else if (state is ListTransactionReady) {
+              return TransactionList(transactions: state.transactions);
+            } else {
               return Center(
-                child: CircularProgressIndicator(),
+                child: Text(
+                    "Unable to handle bloc state: ${state.runtimeType.toString()}"),
               );
             }
-
-            return TransactionList(transactions: state.transactions);
           },
         ),
         floatingActionButton: FloatingActionButton(
@@ -44,6 +47,24 @@ class ListTransactionsPage extends StatelessWidget {
   }
 }
 
+class LoadingTransactionList extends StatelessWidget {
+  const LoadingTransactionList({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        MonthlyGroupHeader(),
+        Expanded(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class TransactionList extends StatelessWidget {
   const TransactionList({Key key, @required this.transactions})
       : super(key: key);
@@ -53,28 +74,50 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final grouper = DayGrouper();
-    final filter = MonthFilter();
 
-    final groupedTransactions = grouper.group(filter.filter(transactions));
+    final groupedTransactions = grouper.group(transactions);
     var keys = groupedTransactions.keys.toList();
     keys.sort();
     keys = keys.reversed.toList();
 
     return Column(
       children: [
-        Container(
-          height: 35,
-          width: double.infinity,
-          child: Center(
-            child: Text(
-              "APRIL 2021",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+        MonthlyGroupHeader(),
+        if (transactions.length == 0)
+          Expanded(
+            child: Center(
+              child: Text("No transactions for this month."),
             ),
-          ),
-          color: Theme.of(context).primaryColorLight,
-        ),
+          )
+        else
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                final key = keys[index];
+                return TransactionGroup(
+                  key,
+                  groupedTransactions[key]['transactions'] as List<Transaction>,
+                  groupedTransactions[key]['amount'],
+                );
+              },
+              itemCount: keys.length,
+            ),
+          )
+      ],
+    );
+  }
+
+  Widget nonEmptyList() {
+    final grouper = DayGrouper();
+
+    final groupedTransactions = grouper.group(transactions);
+    var keys = groupedTransactions.keys.toList();
+    keys.sort();
+    keys = keys.reversed.toList();
+
+    return Column(
+      children: [
+        MonthlyGroupHeader(),
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, index) {
@@ -89,6 +132,69 @@ class TransactionList extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class MonthlyGroupHeader extends StatelessWidget {
+  const MonthlyGroupHeader({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ListTransactionBloc, ListTransactionState>(
+      builder: (context, state) {
+        var previousButton = FlatButton(
+          padding: EdgeInsets.zero,
+          child:
+              Text("<< ${state.previousMonthName} ${state.previousMonthYear}"),
+          onPressed: () {
+            context
+                .read<ListTransactionBloc>()
+                .add(UpdateDateFilterEvent(state.previousMonth));
+          },
+        );
+
+        var nextButton = FlatButton(
+          padding: EdgeInsets.zero,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("${state.nextMonthName} ${state.nextMonthYear} >>"),
+          ),
+          onPressed: () {
+            context
+                .read<ListTransactionBloc>()
+                .add(UpdateDateFilterEvent(state.nextMonth));
+          },
+        );
+
+        return Container(
+          height: 45,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  previousButton,
+                  SizedBox(width: 15),
+                  Text(
+                    "${state.monthName} ${state.year}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  nextButton,
+                ],
+              ),
+            ],
+          ),
+          color: Theme.of(context).primaryColorLight,
+        );
+      },
     );
   }
 }
@@ -236,12 +342,6 @@ class DayGrouper {
     });
 
     return Map<DateTime, dynamic>.from(result);
-  }
-}
-
-class MonthFilter {
-  List<Transaction> filter(List<Transaction> transactions) {
-    return transactions.where((trx) => trx.transactionDate.month == 4).toList();
   }
 }
 
