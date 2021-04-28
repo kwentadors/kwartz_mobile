@@ -25,9 +25,8 @@ class ListTransactionBloc
       yield ListTransactionReady(state.dateFilter, transactions);
     } else if (event is UpdateDateFilterEvent) {
       yield ListTransactionLoading(event.dateFilter);
-
-      Future.delayed(Duration(seconds: 5));
-      List<Transaction> transactions = List.empty();
+      List<Transaction> transactions =
+          await repository.fetchByMonthAndYear(event.dateFilter);
       yield ListTransactionReady(event.dateFilter, transactions);
     } else {
       throw Exception("Unhandled event!");

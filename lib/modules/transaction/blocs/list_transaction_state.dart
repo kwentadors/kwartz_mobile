@@ -3,7 +3,7 @@ part of 'list_transaction_bloc.dart';
 abstract class ListTransactionState extends Equatable {
   final DateTime dateFilter;
 
-  ListTransactionState(DateTime this.dateFilter);
+  ListTransactionState(this.dateFilter);
 
   @override
   List<Object> get props => [dateFilter];

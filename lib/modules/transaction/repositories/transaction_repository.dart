@@ -22,6 +22,14 @@ class TransactionRepository {
     return data.map((e) => decode(e)).toList();
   }
 
+  Future<List<Transaction>> fetchByMonthAndYear(DateTime dateTime) async {
+    final path = "$URL/${dateTime.year}/${dateTime.month}";
+    final response = await apiClient.get(path: path);
+    final data = response['data'] as List;
+
+    return data.map((e) => decode(e)).toList();
+  }
+
   Map<String, Object> encode(Transaction transaction) {
     return {
       "transaction_date": formatter.format(transaction.transactionDate),
