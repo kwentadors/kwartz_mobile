@@ -24,9 +24,6 @@ class ListTransactionsPage extends StatelessWidget {
               );
             } else if (state is ListTransactionLoading) {
               return LoadingTransactionList();
-              // return Center(
-              //   child: CircularProgressIndicator(),
-              // );
             } else if (state is ListTransactionReady) {
               return TransactionList(transactions: state.transactions);
             } else {
@@ -77,9 +74,43 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final grouper = DayGrouper();
-    final filter = MonthFilter();
 
-    final groupedTransactions = grouper.group(filter.filter(transactions));
+    final groupedTransactions = grouper.group(transactions);
+    var keys = groupedTransactions.keys.toList();
+    keys.sort();
+    keys = keys.reversed.toList();
+
+    return Column(
+      children: [
+        MonthlyGroupHeader(),
+        if (transactions.length == 0)
+          Expanded(
+            child: Center(
+              child: Text("No transactions for this month."),
+            ),
+          )
+        else
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                final key = keys[index];
+                return TransactionGroup(
+                  key,
+                  groupedTransactions[key]['transactions'] as List<Transaction>,
+                  groupedTransactions[key]['amount'],
+                );
+              },
+              itemCount: keys.length,
+            ),
+          )
+      ],
+    );
+  }
+
+  Widget nonEmptyList() {
+    final grouper = DayGrouper();
+
+    final groupedTransactions = grouper.group(transactions);
     var keys = groupedTransactions.keys.toList();
     keys.sort();
     keys = keys.reversed.toList();
@@ -311,12 +342,6 @@ class DayGrouper {
     });
 
     return Map<DateTime, dynamic>.from(result);
-  }
-}
-
-class MonthFilter {
-  List<Transaction> filter(List<Transaction> transactions) {
-    return transactions.where((trx) => trx.transactionDate.month == 4).toList();
   }
 }
 
