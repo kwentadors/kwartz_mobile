@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.pink[400],
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          initialRoute: Routes.TransactionList,
+          initialRoute: Routes.LedgerList,
           onGenerateRoute: KwartzRouter.onGenerateRoute,
         ),
       ),

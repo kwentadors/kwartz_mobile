@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../modules/transaction/screens/list_ledger_page.dart';
 import '../modules/transaction/screens/save_transaction_page.dart';
 import '../modules/transaction/screens/list_transaction_page.dart';
 
 class Routes {
   static const TransactionList = 'transaction.list';
   static const TransactionNew = 'transaction.new';
+  static const LedgerList = 'ledger.list';
 }
 
 class KwartzRouter {
@@ -16,6 +18,9 @@ class KwartzRouter {
         return MaterialPageRoute(builder: (_) => ListTransactionsPage());
       case Routes.TransactionNew:
         return _slideFromRight(SaveTransactionPage());
+
+      case Routes.LedgerList:
+        return MaterialPageRoute(builder: (_) => ListLedgerPage());
 
       default:
         return MaterialPageRoute(
