@@ -231,6 +231,7 @@ class TransactionGroup extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) =>
                           JournalEntryWidget(transactions[index]),
