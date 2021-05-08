@@ -19,6 +19,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("New Transaction"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: BlocConsumer<TransactionBloc, TransactionState>(
         listener: (context, state) {

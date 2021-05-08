@@ -14,7 +14,10 @@ class ListTransactionsPage extends StatelessWidget {
         context.read<TransactionRepository>(),
       ),
       child: Scaffold(
-        appBar: AppBar(title: Text("Transactions")),
+        appBar: AppBar(
+          title: Text("Transactions"),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
         body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
           builder: (context, state) {
             if (state is ListTransactionInitial) {
@@ -36,7 +39,7 @@ class ListTransactionsPage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           onPressed: () {
             Navigator.pushNamed(context, Routes.TransactionNew);
             print("go to add transaction page");
@@ -147,8 +150,12 @@ class MonthlyGroupHeader extends StatelessWidget {
       builder: (context, state) {
         var previousButton = FlatButton(
           padding: EdgeInsets.zero,
-          child:
-              Text("<< ${state.previousMonthName} ${state.previousMonthYear}"),
+          child: Text(
+            "<< ${state.previousMonthName} ${state.previousMonthYear}",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
           onPressed: () {
             context
                 .read<ListTransactionBloc>()
@@ -160,7 +167,12 @@ class MonthlyGroupHeader extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text("${state.nextMonthName} ${state.nextMonthYear} >>"),
+            child: Text(
+              "${state.nextMonthName} ${state.nextMonthYear} >>",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
           ),
           onPressed: () {
             context
@@ -184,6 +196,7 @@ class MonthlyGroupHeader extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                   SizedBox(width: 15),
@@ -192,7 +205,7 @@ class MonthlyGroupHeader extends StatelessWidget {
               ),
             ],
           ),
-          color: Theme.of(context).primaryColorLight,
+          color: Theme.of(context).colorScheme.primary,
         );
       },
     );
@@ -226,7 +239,7 @@ class TransactionGroup extends StatelessWidget {
                   TransactionGroupHeader(DateTime.now(), amount),
                   Divider(
                     height: 16,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -247,7 +260,7 @@ class TransactionGroup extends StatelessWidget {
             height: 65,
             width: 65,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
