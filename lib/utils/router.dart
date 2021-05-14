@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../modules/transaction/screens/list_ledger_page.dart';
+import '../modules/transaction/screens/asset_ledger_page.dart';
 import '../modules/transaction/screens/save_transaction_page.dart';
 import '../modules/transaction/screens/list_transaction_page.dart';
 
@@ -20,7 +20,7 @@ class KwartzRouter {
         return _slideFromRight(SaveTransactionPage());
 
       case Routes.LedgerList:
-        return MaterialPageRoute(builder: (_) => ListLedgerPage());
+        return MaterialPageRoute(builder: (_) => AssetLedgerPage());
 
       default:
         return MaterialPageRoute(

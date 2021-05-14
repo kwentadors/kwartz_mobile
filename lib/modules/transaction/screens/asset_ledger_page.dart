@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../utils/text_utils.dart';
 
-class ListLedgerPage extends StatelessWidget {
+class AssetLedgerPage extends StatelessWidget {
   final _data = [
     {
       'name': 'Cash and equivalents',
