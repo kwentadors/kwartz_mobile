@@ -24,12 +24,12 @@ class AssetReportGroup {
 
 class AssetReportGroupEntry {
   final String name;
+  final double amount;
   final String description;
-  final String amount;
 
   AssetReportGroupEntry({
     @required this.name,
-    @required this.description,
     @required this.amount,
+    this.description,
   });
 }

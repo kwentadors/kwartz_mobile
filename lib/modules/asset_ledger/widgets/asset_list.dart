@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../utils/text_utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwartz_mobile/utils/text_utils.dart';
+import '../blocs/asset_ledger_bloc.dart';
+import '../models/asset_report.dart';
 
 class AssetList extends StatelessWidget {
   final List<Map<String, dynamic>> data;
@@ -7,32 +10,38 @@ class AssetList extends StatelessWidget {
   const AssetList({Key key, this.data}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final assetGroup = data[index];
-        return AssetGroup(
-          assetGroupName: assetGroup['name'],
-          assetGroupEntries: assetGroup['entries'],
-        );
+    return BlocBuilder<AssetLedgerBloc, AssetLedgerState>(
+      builder: (context, state) {
+        if (state is AssetLedgerReady) {
+          final assetReportGroups = state.assetReport.groups;
+
+          return ListView.separated(
+            itemBuilder: (context, index) {
+              final assetReportGroup = assetReportGroups[index];
+              return AssetGroupTile(assetReportGroup: assetReportGroup);
+            },
+            separatorBuilder: (context, index) => Divider(height: 10),
+            itemCount: assetReportGroups.length,
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
       },
-      separatorBuilder: (context, index) => Divider(height: 10),
-      itemCount: data.length,
     );
   }
 }
 
-class AssetGroup extends StatelessWidget {
-  const AssetGroup({
+class AssetGroupTile extends StatelessWidget {
+  const AssetGroupTile({
     Key key,
-    @required this.assetGroupName,
-    @required this.assetGroupEntries,
+    @required this.assetReportGroup,
   }) : super(key: key);
 
-  final String assetGroupName;
-  final List assetGroupEntries;
+  final AssetReportGroup assetReportGroup;
 
   @override
   Widget build(BuildContext context) {
+    final assetReportGroupEntries = this.assetReportGroup.entries;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -41,46 +50,59 @@ class AssetGroup extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(assetGroupName),
+            child: Text(assetReportGroup.name),
           ),
         ),
         Card(
           child: ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final entry = assetGroupEntries[index];
-              if (entry['description'] != null) {
-                return ListTile(
-                  title: Text(entry['name']),
-                  subtitle: (Text(entry['description'] ?? "")),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(formatCurrency(entry['amount'])),
-                      Icon(Icons.trending_up),
-                    ],
-                  ),
-                );
-              } else {
-                return ListTile(
-                  isThreeLine: false,
-                  title: Text(entry['name']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(formatCurrency(entry['amount'])),
-                      Icon(Icons.trending_up),
-                    ],
-                  ),
-                );
-              }
-            },
-            itemCount: assetGroupEntries.length,
+            itemBuilder: (context, index) => AssetReportGroupEntryTile(
+              entry: assetReportGroupEntries[index],
+            ),
+            itemCount: assetReportGroupEntries.length,
             separatorBuilder: (context, index) => Divider(),
           ),
         ),
       ],
     );
+  }
+}
+
+class AssetReportGroupEntryTile extends StatelessWidget {
+  const AssetReportGroupEntryTile({
+    Key key,
+    @required this.entry,
+  }) : super(key: key);
+
+  final AssetReportGroupEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (entry.description != null) {
+      return ListTile(
+        title: Text(entry.name),
+        subtitle: Text(entry.description),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(formatCurrency(entry.amount)),
+            Icon(Icons.trending_up),
+          ],
+        ),
+      );
+    } else {
+      return ListTile(
+        isThreeLine: false,
+        title: Text(entry.name),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(formatCurrency(entry.amount)),
+            Icon(Icons.trending_up),
+          ],
+        ),
+      );
+    }
   }
 }
