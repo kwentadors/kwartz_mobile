@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../asset_ledger/widgets/asset_card.dart';
+import '../../asset_ledger/blocs/asset_ledger_bloc.dart';
 import '../../../utils/text_utils.dart';
 
 class AssetLedgerPage extends StatelessWidget {
@@ -52,12 +55,15 @@ class AssetLedgerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Ledger"),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+    return BlocProvider<AssetLedgerBloc>(
+      create: (context) => AssetLedgerBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Ledger"),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+        body: ListLedgerBody(data: _data),
       ),
-      body: ListLedgerBody(data: _data),
     );
   }
 }
@@ -80,60 +86,6 @@ class ListLedgerBody extends StatelessWidget {
           SizedBox(height: 20),
           Expanded(child: AssetCompositionList(data: data))
         ],
-      ),
-    );
-  }
-}
-
-class AssetsCard extends StatelessWidget {
-  const AssetsCard({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              "Assets",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  .copyWith(color: Colors.white),
-            ),
-            SizedBox(height: 8),
-            Text(
-              formatCurrency(523720.72),
-              style: Theme.of(context).textTheme.headline5.copyWith(
-                    color: Colors.greenAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(width: 5),
-                Text(
-                  "${2.45.toStringAsFixed(2)}%",
-                  style: TextStyle(
-                    color: Colors.greenAccent,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_drop_up,
-                  color: Colors.greenAccent,
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
