@@ -6,6 +6,10 @@ class AssetReport {
   AssetReport({
     @required this.groups,
   });
+
+  double get balance => 523720.72;
+
+  double get changePercent => -2.45;
 }
 
 class AssetReportGroup {

@@ -12,6 +12,5 @@ class AssetLedgerInitial extends AssetLedgerState {}
 class AssetLedgerLoading extends AssetLedgerState {}
 
 class AssetLedgerReady extends AssetLedgerState {
-  double get balance => 523720.72;
-  double get changePercent => -2.45;
+  AssetReport get assetReport => AssetReport(groups: <AssetReportGroup>[]);
 }

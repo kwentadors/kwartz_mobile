@@ -53,14 +53,17 @@ class AssetsCard extends StatelessWidget {
   }
 
   Column _buildAssetFigures(BuildContext context, AssetLedgerReady state) {
+    final assetReport = state.assetReport;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          formatCurrency(state.balance),
+          formatCurrency(assetReport.balance),
           style: Theme.of(context).textTheme.headline5.copyWith(
-                color:
-                    state.changePercent > 0 ? Colors.greenAccent : Colors.red,
+                color: assetReport.changePercent > 0
+                    ? Colors.greenAccent
+                    : Colors.red,
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -69,15 +72,15 @@ class AssetsCard extends StatelessWidget {
           children: [
             SizedBox(width: 5),
             Text(
-              "${state.changePercent.abs().toStringAsFixed(2)}%",
+              "${assetReport.changePercent.abs().toStringAsFixed(2)}%",
               style: TextStyle(
-                color: state.changePercent > 0
+                color: assetReport.changePercent > 0
                     ? Colors.greenAccent
                     : Colors.redAccent,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            state.changePercent > 0
+            assetReport.changePercent > 0
                 ? Icon(
                     Icons.arrow_drop_up,
                     color: Colors.greenAccent,
