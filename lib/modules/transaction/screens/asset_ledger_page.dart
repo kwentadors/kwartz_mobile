@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwartz_mobile/modules/asset_ledger/widgets/asset_list.dart';
 import '../../asset_ledger/widgets/asset_card.dart';
 import '../../asset_ledger/blocs/asset_ledger_bloc.dart';
 import '../../../utils/text_utils.dart';
@@ -84,93 +85,9 @@ class ListLedgerBody extends StatelessWidget {
             child: AssetsCard(),
           ),
           SizedBox(height: 20),
-          Expanded(child: AssetCompositionList(data: data))
+          Expanded(child: AssetList(data: data))
         ],
       ),
-    );
-  }
-}
-
-class AssetCompositionList extends StatelessWidget {
-  final List<Map<String, dynamic>> data;
-
-  const AssetCompositionList({Key key, this.data}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final assetGroup = data[index];
-        return AssetGroup(
-          assetGroupName: assetGroup['name'],
-          assetGroupEntries: assetGroup['entries'],
-        );
-      },
-      separatorBuilder: (context, index) => Divider(height: 10),
-      itemCount: data.length,
-    );
-  }
-}
-
-class AssetGroup extends StatelessWidget {
-  const AssetGroup({
-    Key key,
-    @required String this.assetGroupName,
-    @required List this.assetGroupEntries,
-  }) : super(key: key);
-
-  final assetGroupName;
-  final assetGroupEntries;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(assetGroupName),
-          ),
-        ),
-        Card(
-          child: ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final entry = assetGroupEntries[index];
-              if (entry['description'] != null) {
-                return ListTile(
-                  title: Text(entry['name']),
-                  subtitle: (Text(entry['description'] ?? "")),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(formatCurrency(entry['amount'])),
-                      Icon(Icons.trending_up),
-                    ],
-                  ),
-                );
-              } else {
-                return ListTile(
-                  isThreeLine: false,
-                  title: Text(entry['name']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(formatCurrency(entry['amount'])),
-                      Icon(Icons.trending_up),
-                    ],
-                  ),
-                );
-              }
-            },
-            itemCount: assetGroupEntries.length,
-            separatorBuilder: (context, index) => Divider(),
-          ),
-        ),
-      ],
     );
   }
 }

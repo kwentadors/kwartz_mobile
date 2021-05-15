@@ -7,7 +7,7 @@ part 'asset_ledger_event.dart';
 part 'asset_ledger_state.dart';
 
 class AssetLedgerBloc extends Bloc<AssetLedgerEvent, AssetLedgerState> {
-  AssetLedgerBloc() : super(AssetLedgerReady());
+  AssetLedgerBloc() : super(AssetLedgerLoading());
 
   @override
   Stream<AssetLedgerState> mapEventToState(
