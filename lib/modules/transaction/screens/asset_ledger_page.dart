@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/modules/asset_ledger/widgets/asset_list.dart';
+import '../../asset_ledger/widgets/asset_list.dart';
 import '../../asset_ledger/widgets/asset_card.dart';
 import '../../asset_ledger/blocs/asset_ledger_bloc.dart';
-import '../../../utils/text_utils.dart';
 
 class AssetLedgerPage extends StatelessWidget {
   final _data = [

@@ -8,12 +8,18 @@ part 'asset_ledger_event.dart';
 part 'asset_ledger_state.dart';
 
 class AssetLedgerBloc extends Bloc<AssetLedgerEvent, AssetLedgerState> {
-  AssetLedgerBloc() : super(AssetLedgerReady());
+  AssetLedgerBloc() : super(AssetLedgerInitial()) {
+    add(FetchAssetReport());
+  }
 
   @override
   Stream<AssetLedgerState> mapEventToState(
     AssetLedgerEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    if (event is FetchAssetReport) {
+      yield AssetLedgerLoading();
+      await Future.delayed(new Duration(seconds: 5), () => null);
+      yield AssetLedgerReady();
+    }
   }
 }

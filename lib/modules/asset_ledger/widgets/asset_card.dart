@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/utils/text_utils.dart';
+import '../../../utils/text_utils.dart';
 import '../blocs/asset_ledger_bloc.dart';
 
 class AssetsCard extends StatelessWidget {
@@ -29,7 +29,8 @@ class AssetsCard extends StatelessWidget {
                       .copyWith(color: Colors.white),
                 ),
                 SizedBox(height: 8),
-                if (state is AssetLedgerLoading) _buildLoadingSpinner(context),
+                if (state is AssetLedgerLoading || state is AssetLedgerInitial)
+                  _buildLoadingSpinner(context),
                 if (state is AssetLedgerReady)
                   _buildAssetFigures(context, state)
               ],

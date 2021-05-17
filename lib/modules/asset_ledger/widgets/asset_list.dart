@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/utils/text_utils.dart';
+import '../../../utils/text_utils.dart';
 import '../blocs/asset_ledger_bloc.dart';
 import '../models/asset_report.dart';
 
@@ -12,6 +12,10 @@ class AssetList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AssetLedgerBloc, AssetLedgerState>(
       builder: (context, state) {
+        if (state is AssetLedgerLoading || state is AssetLedgerInitial) {
+          return Center(child: CircularProgressIndicator());
+        }
+
         if (state is AssetLedgerReady) {
           final assetReportGroups = state.assetReport.groups;
 
@@ -23,8 +27,6 @@ class AssetList extends StatelessWidget {
             separatorBuilder: (context, index) => Divider(height: 10),
             itemCount: assetReportGroups.length,
           );
-        } else {
-          return Center(child: CircularProgressIndicator());
         }
       },
     );

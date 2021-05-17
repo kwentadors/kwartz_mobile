@@ -6,3 +6,5 @@ abstract class AssetLedgerEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class FetchAssetReport extends AssetLedgerEvent {}
