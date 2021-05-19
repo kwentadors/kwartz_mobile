@@ -20,9 +20,12 @@ class AssetsCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
+              verticalDirection: VerticalDirection.down,
+              textDirection: TextDirection.ltr,
               children: [
                 Text(
                   "Assets",
+                  textDirection: TextDirection.ltr,
                   style: Theme.of(context)
                       .textTheme
                       .headline6
@@ -44,7 +47,6 @@ class AssetsCard extends StatelessWidget {
   Container _buildLoadingSpinner(BuildContext context) {
     return Container(
       child: CircularProgressIndicator(
-        // backgroundColor: Colors.white,
         valueColor: AlwaysStoppedAnimation<Color>(
           Theme.of(context).colorScheme.secondary,
         ),
@@ -55,44 +57,67 @@ class AssetsCard extends StatelessWidget {
 
   Column _buildAssetFigures(BuildContext context, AssetLedgerReady state) {
     final assetReport = state.assetReport;
+    final assetReportStyle = _getAssetReportStyle(assetReport.changePercent);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
+      textDirection: TextDirection.ltr,
       children: [
         Text(
           formatCurrency(assetReport.balance),
+          key: ValueKey('asset-balance'),
+          textDirection: TextDirection.ltr,
           style: Theme.of(context).textTheme.headline5.copyWith(
-                color: assetReport.changePercent > 0
-                    ? Colors.greenAccent
-                    : Colors.red,
+                color: assetReportStyle['color'],
                 fontWeight: FontWeight.bold,
               ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
+          textDirection: TextDirection.ltr,
           children: [
             SizedBox(width: 5),
             Text(
               "${assetReport.changePercent.abs().toStringAsFixed(2)}%",
+              key: ValueKey('asset-change'),
+              textDirection: TextDirection.ltr,
               style: TextStyle(
-                color: assetReport.changePercent > 0
-                    ? Colors.greenAccent
-                    : Colors.redAccent,
+                color: assetReportStyle['color'],
                 fontWeight: FontWeight.w600,
               ),
             ),
-            assetReport.changePercent > 0
-                ? Icon(
-                    Icons.arrow_drop_up,
-                    color: Colors.greenAccent,
-                  )
-                : Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.redAccent,
-                  ),
+            if (assetReportStyle.containsKey('icon')) assetReportStyle['icon']
           ],
         ),
       ],
     );
+  }
+
+  Map<String, dynamic> _getAssetReportStyle(double assetChange) {
+    if (assetChange > 0) {
+      return {
+        'color': Colors.greenAccent,
+        'icon': Icon(
+          Icons.arrow_drop_up,
+          key: ValueKey("asset-change-icon"),
+          textDirection: TextDirection.ltr,
+          color: Colors.greenAccent,
+        ),
+      };
+    }
+
+    if (assetChange == 0) {
+      return {'color': Colors.grey};
+    }
+
+    return {
+      'color': Colors.redAccent,
+      'icon': Icon(
+        Icons.arrow_drop_down,
+        key: ValueKey("asset-change-icon"),
+        textDirection: TextDirection.ltr,
+        color: Colors.redAccent,
+      )
+    };
   }
 }
