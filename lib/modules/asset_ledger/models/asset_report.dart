@@ -13,23 +13,26 @@ class AssetReport {
 }
 
 class AssetReportGroup {
+  final String id;
   final String name;
-  final List<AssetReportGroupEntry> entries;
+  final List<AssetReportGroupEntry> entries = [];
 
   AssetReportGroup({
+    @required this.id,
     @required this.name,
-    @required this.entries,
   });
 }
 
 class AssetReportGroupEntry {
   final String name;
   final double amount;
+  final double changePercent;
   final String description;
 
   AssetReportGroupEntry({
     @required this.name,
     @required this.amount,
+    @required this.changePercent,
     this.description,
   });
 }

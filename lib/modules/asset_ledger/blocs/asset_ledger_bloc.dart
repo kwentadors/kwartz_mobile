@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../repositories/asset_report_repository.dart';
 import '../models/asset_report.dart';
 
 part 'asset_ledger_event.dart';
 part 'asset_ledger_state.dart';
 
 class AssetLedgerBloc extends Bloc<AssetLedgerEvent, AssetLedgerState> {
-  AssetLedgerBloc() : super(AssetLedgerInitial()) {
+  final AssetReportRepository repository;
+
+  AssetLedgerBloc(this.repository) : super(AssetLedgerInitial()) {
     add(FetchAssetReport());
   }
 
@@ -18,8 +21,8 @@ class AssetLedgerBloc extends Bloc<AssetLedgerEvent, AssetLedgerState> {
   ) async* {
     if (event is FetchAssetReport) {
       yield AssetLedgerLoading();
-      await Future.delayed(new Duration(seconds: 5), () => null);
-      yield AssetLedgerReady();
+      var assetReport = await repository.fetch();
+      yield AssetLedgerReady(assetReport);
     }
   }
 }
