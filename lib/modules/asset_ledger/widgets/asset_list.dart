@@ -20,6 +20,7 @@ class AssetList extends StatelessWidget {
           final assetReportGroups = state.assetReport.groups;
 
           return ListView.separated(
+            key: ValueKey('asset-group-list'),
             itemBuilder: (context, index) {
               final assetReportGroup = assetReportGroups[index];
               return AssetGroupTile(assetReportGroup: assetReportGroup);
