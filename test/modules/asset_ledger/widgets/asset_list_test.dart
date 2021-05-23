@@ -22,6 +22,18 @@ class MockAssetReportGroup extends Mock implements AssetReportGroup {
   });
 }
 
+class MockAssetReportGroupEntry extends Mock implements AssetReportGroupEntry {
+  final String name;
+  final double amount;
+  final double changePercent;
+
+  MockAssetReportGroupEntry({
+    this.name = 'Account entry',
+    this.amount = 0.00,
+    this.changePercent = 0.00,
+  });
+}
+
 void main() {
   AssetLedgerBloc _bloc;
 
@@ -83,6 +95,49 @@ void main() {
               5));
 
       expect(find.byType(AssetGroupTile), findsNWidgets(3));
+      expect(find.byType(Divider), findsNWidgets(2));
+    });
+  });
+
+  group("AssetGroupTile", () {
+    testWidgets('shows name of asset group', (tester) async {
+      final assetReportGroup = MockAssetReportGroup(name: 'Cash equivalents');
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: AssetGroupTile(assetReportGroup: assetReportGroup),
+        ),
+      );
+
+      expect(find.text(assetReportGroup.name), findsOneWidget);
+    });
+
+    testWidgets('shows entries under group', (tester) async {
+      final assetEntries = [
+        MockAssetReportGroupEntry(),
+        MockAssetReportGroupEntry(),
+        MockAssetReportGroupEntry(),
+      ];
+      final assetReportGroup = MockAssetReportGroup(entries: assetEntries);
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: MediaQueryData(),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AssetGroupTile(assetReportGroup: assetReportGroup),
+          ),
+        ),
+      );
+
+      expect(
+          tester.widget(find.byType(ListView)),
+          isA<ListView>().having(
+              (listView) => listView.childrenDelegate.estimatedChildCount,
+              'entries count',
+              5));
+      expect(find.byType(AssetReportGroupEntryTile), findsNWidgets(3));
       expect(find.byType(Divider), findsNWidgets(2));
     });
   });
