@@ -87,6 +87,7 @@ class AssetReportGroupEntryTile extends StatelessWidget {
       color: assetReportStyle['color'],
       fontWeight: FontWeight.bold,
     );
+
     return ListTile(
       isThreeLine: (entry.description != null),
       title: _titleContent(textStyle),
@@ -140,12 +141,12 @@ Map<String, dynamic> _getAssetReportStyle(double assetChange) {
   }
 
   return {
-    'color': Colors.redAccent,
+    'color': Colors.red,
     'icon': Icon(
       Icons.arrow_drop_down,
       key: ValueKey("asset-change-icon"),
       textDirection: TextDirection.ltr,
-      color: Colors.redAccent,
+      color: Colors.red,
     )
   };
 }

@@ -9,7 +9,7 @@ class AssetReport {
 
   double get balance => 523720.72;
 
-  double get changePercent => 0.0;
+  double get changePercent => 2.57;
 }
 
 class AssetReportGroup {

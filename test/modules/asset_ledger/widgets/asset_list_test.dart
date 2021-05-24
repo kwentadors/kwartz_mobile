@@ -26,11 +26,13 @@ class MockAssetReportGroupEntry extends Mock implements AssetReportGroupEntry {
   final String name;
   final double amount;
   final double changePercent;
+  final String description;
 
   MockAssetReportGroupEntry({
     this.name = 'Account entry',
     this.amount = 0.00,
     this.changePercent = 0.00,
+    this.description,
   });
 }
 
@@ -139,6 +141,89 @@ void main() {
               5));
       expect(find.byType(AssetReportGroupEntryTile), findsNWidgets(3));
       expect(find.byType(Divider), findsNWidgets(2));
+    });
+  });
+
+  group("AssetReportGroupEntryTile", () {
+    testWidgets('with increase in balance', (tester) async {
+      final assetEntry = MockAssetReportGroupEntry(
+        name: "House n' Lot",
+        amount: 33365.08,
+        changePercent: 8.17,
+      );
+
+      await tester.pumpWidget(Material(
+        child: MediaQuery(
+          data: MediaQueryData(),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AssetReportGroupEntryTile(entry: assetEntry),
+          ),
+        ),
+      ));
+
+      expect(
+          tester.widget(find.text(assetEntry.name)),
+          isA<Text>()
+              .having((t) => t.style.color, 'title color', Colors.green));
+      expect(
+          tester.widget(find.text("33,365.08")),
+          isA<Text>().having(
+              (t) => t.style.color, 'amount balance color', Colors.green));
+      expect(find.byIcon(Icons.arrow_drop_up), findsOneWidget);
+    });
+
+    testWidgets('with decrease in balance', (tester) async {
+      final assetEntry = MockAssetReportGroupEntry(
+        name: "Savings Account",
+        amount: 552.81,
+        changePercent: -0.18,
+      );
+
+      await tester.pumpWidget(Material(
+        child: MediaQuery(
+          data: MediaQueryData(),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AssetReportGroupEntryTile(entry: assetEntry),
+          ),
+        ),
+      ));
+
+      expect(tester.widget(find.text(assetEntry.name)),
+          isA<Text>().having((t) => t.style.color, 'title color', Colors.red));
+      expect(
+          tester.widget(find.text("552.81")),
+          isA<Text>().having(
+              (t) => t.style.color, 'amount balance color', Colors.red));
+      expect(find.byIcon(Icons.arrow_drop_down), findsOneWidget);
+    });
+
+    testWidgets('with zero change in balance', (tester) async {
+      final assetEntry = MockAssetReportGroupEntry(
+        name: "Miscellaneous assets",
+        amount: 0.00,
+        changePercent: 0.00,
+      );
+
+      await tester.pumpWidget(Material(
+        child: MediaQuery(
+          data: MediaQueryData(),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AssetReportGroupEntryTile(entry: assetEntry),
+          ),
+        ),
+      ));
+
+      expect(tester.widget(find.text(assetEntry.name)),
+          isA<Text>().having((t) => t.style.color, 'title color', Colors.grey));
+      expect(
+          tester.widget(find.text("0.00")),
+          isA<Text>().having(
+              (t) => t.style.color, 'amount balance color', Colors.grey));
+      expect(find.byIcon(Icons.arrow_drop_up), findsNothing);
+      expect(find.byIcon(Icons.arrow_drop_down), findsNothing);
     });
   });
 }
