@@ -82,30 +82,70 @@ class AssetReportGroupEntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (entry.description != null) {
-      return ListTile(
-        title: Text(entry.name),
-        subtitle: Text(entry.description),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(formatCurrency(entry.amount)),
-            Icon(Icons.trending_up),
-          ],
-        ),
-      );
-    } else {
-      return ListTile(
-        isThreeLine: false,
-        title: Text(entry.name),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(formatCurrency(entry.amount)),
-            Icon(Icons.trending_up),
-          ],
-        ),
-      );
-    }
+    final assetReportStyle = _getAssetReportStyle(entry.changePercent);
+    final textStyle = TextStyle(
+      color: assetReportStyle['color'],
+      fontWeight: FontWeight.bold,
+    );
+    return ListTile(
+      isThreeLine: (entry.description != null),
+      title: _titleContent(textStyle),
+      subtitle: (entry.description != null)
+          ? Text(
+              entry.description,
+              style: textStyle,
+            )
+          : null,
+      trailing: _trailingContent(assetReportStyle, textStyle),
+    );
   }
+
+  Widget _titleContent(TextStyle textStyle) {
+    return Text(
+      entry.name,
+      style: textStyle,
+    );
+  }
+
+  Widget _trailingContent(
+      Map<String, dynamic> assetReportStyle, TextStyle textStyle) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (assetReportStyle['icon'] != null) assetReportStyle['icon'],
+        Text(
+          formatCurrency(entry.amount),
+          style: textStyle,
+        ),
+      ],
+    );
+  }
+}
+
+Map<String, dynamic> _getAssetReportStyle(double assetChange) {
+  if (assetChange == null || assetChange == 0) {
+    return {'color': Colors.grey};
+  }
+
+  if (assetChange > 0) {
+    return {
+      'color': Colors.green,
+      'icon': Icon(
+        Icons.arrow_drop_up,
+        key: ValueKey("asset-change-icon"),
+        textDirection: TextDirection.ltr,
+        color: Colors.green,
+      ),
+    };
+  }
+
+  return {
+    'color': Colors.redAccent,
+    'icon': Icon(
+      Icons.arrow_drop_down,
+      key: ValueKey("asset-change-icon"),
+      textDirection: TextDirection.ltr,
+      color: Colors.redAccent,
+    )
+  };
 }
