@@ -6,12 +6,12 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
 class ApiClient {
-  final HOSTNAME = "http://kwartz.herokuapp.com";
-  final LOGGER = Logger("ApiClient");
+  final hostname = "http://kwartz.herokuapp.com";
+  final _logger = Logger("ApiClient");
 
   dynamic get({@required String path}) async {
-    final url = "$HOSTNAME$path";
-    LOGGER.info("Sending request to $url");
+    final url = "$hostname$path";
+    _logger.info("Sending request to $url");
     final response = await http.get(url);
     _logResponse(response);
 
@@ -23,9 +23,9 @@ class ApiClient {
     Map<String, Object> body,
   }) async {
     String serializedContent = json.encode(body);
-    final url = "$HOSTNAME$path";
+    final url = "$hostname$path";
 
-    LOGGER.info("Sending request to $url with content: $serializedContent");
+    _logger.info("Sending request to $url with content: $serializedContent");
     final response = await http.post(
       url,
       headers: _requestHeaders(),
@@ -37,7 +37,7 @@ class ApiClient {
   }
 
   void _logResponse(response) {
-    LOGGER.info(
+    _logger.info(
         "Received request from ${response.request.url} with status ${response.statusCode} and content: ${response.body}");
   }
 
