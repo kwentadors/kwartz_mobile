@@ -28,6 +28,10 @@ class AssetList extends StatelessWidget {
             separatorBuilder: (context, index) => Divider(height: 10),
             itemCount: assetReportGroups.length,
           );
+        } else {
+          return Center(
+            child: Text("Unhandled state"),
+          );
         }
       },
     );
