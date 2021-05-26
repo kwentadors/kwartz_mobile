@@ -45,10 +45,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Kwartz',
-          // darkTheme: ThemeData.dark(),
           theme: ThemeData(
-            // brightness: Brightness.dark,
-            // primaryColor: Colors.pink[600],
             colorScheme: ColorScheme(
               primary: Colors.grey[900],
               primaryVariant: Colors.black,
