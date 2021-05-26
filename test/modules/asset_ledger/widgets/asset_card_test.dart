@@ -11,19 +11,23 @@ class MockAssetLedgerBloc extends Mock implements AssetLedgerBloc {}
 class MockAssetReport extends Mock implements AssetReport {}
 
 void main() {
-  AssetLedgerBloc bloc;
+  AssetLedgerBloc _bloc;
 
   setUp(() {
-    bloc = MockAssetLedgerBloc();
+    _bloc = MockAssetLedgerBloc();
+  });
+
+  tearDown(() {
+    if (_bloc != null) _bloc.close();
   });
 
   group('AssetCard', () {
     testWidgets('should initially render progress indicator', (tester) async {
-      when(bloc.state).thenReturn(AssetLedgerInitial());
+      when(_bloc.state).thenReturn(AssetLedgerInitial());
 
       await tester.pumpWidget(
         BlocProvider<AssetLedgerBloc>(
-          create: (context) => bloc,
+          create: (context) => _bloc,
           child: AssetsCard(),
         ),
       );
@@ -33,11 +37,11 @@ void main() {
 
     testWidgets('should render progress indicator when state is loading',
         (tester) async {
-      when(bloc.state).thenReturn(AssetLedgerLoading());
+      when(_bloc.state).thenReturn(AssetLedgerLoading());
 
       await tester.pumpWidget(
         BlocProvider<AssetLedgerBloc>(
-          create: (context) => bloc,
+          create: (context) => _bloc,
           child: AssetsCard(),
         ),
       );
@@ -50,7 +54,7 @@ void main() {
 
       setUp(() {
         assetReport = MockAssetReport();
-        when(bloc.state).thenReturn(AssetLedgerReady(assetReport));
+        when(_bloc.state).thenReturn(AssetLedgerReady(assetReport));
       });
 
       testWidgets('with decrease in asset', (tester) async {
@@ -58,7 +62,7 @@ void main() {
         when(assetReport.changePercent).thenReturn(-5.23);
 
         await tester.pumpWidget(BlocProvider<AssetLedgerBloc>(
-          create: (context) => bloc,
+          create: (context) => _bloc,
           child: AssetsCard(),
         ));
 
@@ -88,7 +92,7 @@ void main() {
         when(assetReport.changePercent).thenReturn(2.23);
 
         await tester.pumpWidget(BlocProvider<AssetLedgerBloc>(
-          create: (context) => bloc,
+          create: (context) => _bloc,
           child: AssetsCard(),
         ));
 
@@ -118,7 +122,7 @@ void main() {
         when(assetReport.changePercent).thenReturn(0);
 
         await tester.pumpWidget(BlocProvider<AssetLedgerBloc>(
-          create: (context) => bloc,
+          create: (context) => _bloc,
           child: AssetsCard(),
         ));
 

@@ -43,6 +43,10 @@ void main() {
     _bloc = MockAssetLedgerBloc();
   });
 
+  tearDown(() {
+    if (_bloc != null) _bloc.close();
+  });
+
   group("AssetList", () {
     testWidgets("at AssetLedgerInitial state", (tester) async {
       when(_bloc.state).thenReturn(AssetLedgerInitial());

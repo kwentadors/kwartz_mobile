@@ -10,17 +10,22 @@ class MockFinancialAccountBloc extends MockBloc<FinancialAccountState>
     implements FinancialAccountBloc {}
 
 void main() {
-  FinancialAccountBloc bloc;
+  FinancialAccountBloc _bloc;
 
   setUp(() {
-    bloc = MockFinancialAccountBloc();
+    _bloc = MockFinancialAccountBloc();
   });
+
+  tearDown(() {
+    if (_bloc != null) _bloc.close();
+  });
+
   group('Journal Entry Account', () {
     testWidgets('renders progress indicator when state is pre-boot',
         (tester) async {
-      when(bloc.state).thenReturn(PrebootState());
+      when(_bloc.state).thenReturn(PrebootState());
       await tester.pumpWidget(BlocProvider.value(
-        value: bloc,
+        value: _bloc,
         child: AccountNameInput(entry: null),
       ));
 
