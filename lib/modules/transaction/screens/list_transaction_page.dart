@@ -45,6 +45,23 @@ class ListTransactionsPage extends StatelessWidget {
             print("go to add transaction page");
           },
         ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.list_alt,
+              ),
+              label: 'Transactions',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.leaderboard,
+              ),
+              label: 'Reports',
+            ),
+          ],
+          currentIndex: 1,
+        ),
       ),
     );
   }
