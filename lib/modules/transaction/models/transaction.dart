@@ -50,7 +50,6 @@ class Transaction {
     return entry;
   }
 
-// TODO verify the entries have the same amount
   double get amount => debitEntries.fold(0, (sum, entry) => sum + entry.amount);
 
   Transaction copyWith({

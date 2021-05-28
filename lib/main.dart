@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/utils/router.dart';
+import 'package:kwartz_mobile/modules/asset_ledger/serializers/asset_report_serializer.dart';
+import 'modules/asset_ledger/repositories/asset_report_repository.dart';
+import 'utils/router.dart';
 import 'modules/transaction/repositories/transaction_repository.dart';
 import 'modules/financial_account/blocs/financial_account_bloc.dart';
 import 'modules/financial_account/repositories/financial_account_repository.dart';
@@ -25,6 +27,11 @@ class MyApp extends StatelessWidget {
             create: (context) => FinancialAccountRepository()),
         RepositoryProvider<TransactionRepository>(
             create: (context) => TransactionRepository()),
+        RepositoryProvider(
+          create: (context) => AssetReportRepository(
+            serializer: AssetReportSerializer(),
+          ),
+        )
       ],
       child: MultiBlocProvider(
         providers: [
@@ -38,10 +45,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Kwartz',
-          // darkTheme: ThemeData.dark(),
           theme: ThemeData(
-            // brightness: Brightness.dark,
-            // primaryColor: Colors.pink[600],
             colorScheme: ColorScheme(
               primary: Colors.grey[900],
               primaryVariant: Colors.black,
@@ -50,16 +54,16 @@ class MyApp extends StatelessWidget {
               secondaryVariant: Colors.brown,
               onSecondary: Colors.white,
               surface: Colors.grey[100],
-              onSurface: Colors.white,
+              onSurface: Colors.black,
               background: Colors.grey[200],
-              onBackground: Colors.white,
+              onBackground: Colors.black,
               error: Colors.red,
               onError: Colors.red,
               brightness: Brightness.light,
             ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          initialRoute: Routes.LedgerList,
+          initialRoute: Routes.TransactionList,
           onGenerateRoute: KwartzRouter.onGenerateRoute,
         ),
       ),

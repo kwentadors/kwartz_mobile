@@ -91,16 +91,8 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
   }
 
   void saveForm(BuildContext context) {
-    // TODO validation
-    // if (!_formKey.currentState.validate()) {
-    //   return;
-    // }
-
-    // _formKey.currentState.save();
-
-    var transactionBloc = BlocProvider.of<TransactionBloc>(context);
-    var transaction = transactionBloc.state.transaction;
-    transactionBloc.add(SaveTransaction(transaction));
+    var transaction = context.read<TransactionBloc>().state.transaction;
+    context.read<TransactionBloc>().add(SaveTransaction(transaction));
   }
 }
 
