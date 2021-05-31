@@ -67,7 +67,7 @@ class AssetLedgerPage extends StatelessWidget {
         ),
         body: ListLedgerBody(data: _data),
         bottomNavigationBar:
-            KwartzBottomNavigationBar(KwartzNavigation.Transactions),
+            KwartzBottomNavigationBar(KwartzNavigation.Reports),
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kwartz_mobile/utils/router.dart';
 
 class KwartzNavigation {
   static const Transactions = 0;
+  static const Reports = 1;
 }
 
 class KwartzBottomNavigationBar extends StatelessWidget {
@@ -30,6 +32,24 @@ class KwartzBottomNavigationBar extends StatelessWidget {
         ),
       ],
       currentIndex: navigationIndex,
+      onTap: (navIndex) {
+        switch (navIndex) {
+          case KwartzNavigation.Reports:
+            Navigator.of(context).pushReplacementNamed(Routes.LedgerList);
+            break;
+          case KwartzNavigation.Transactions:
+            Navigator.of(context).pushReplacementNamed(Routes.TransactionList);
+            break;
+          default:
+            Scaffold.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text("Unhandled navigation"),
+                ),
+              );
+        }
+      },
     );
   }
 }
