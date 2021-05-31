@@ -38,7 +38,6 @@ class ListTransactionsPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.secondary,
         onPressed: () {
           Navigator.pushNamed(context, Routes.TransactionNew);
-          print("go to add transaction page");
         },
       ),
       bottomNavigationBar:
