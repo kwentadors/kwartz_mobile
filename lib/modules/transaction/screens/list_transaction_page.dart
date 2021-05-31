@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'common/kwartz_bottom_nav_bar.dart';
-import '../repositories/transaction_repository.dart';
 import '../blocs/list_transaction_bloc.dart';
 import '../models/transaction.dart';
 import '../../../utils/router.dart';
@@ -10,45 +9,40 @@ import '../../../utils/router.dart';
 class ListTransactionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ListTransactionBloc>(
-      create: (context) => ListTransactionBloc(
-        context.read<TransactionRepository>(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Transactions"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Transactions"),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
-        body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
-          builder: (context, state) {
-            if (state is ListTransactionInitial) {
-              context.read<ListTransactionBloc>().add(FetchTransactionsEvent());
-              return Center(
-                child: Text("Initial state"),
-              );
-            } else if (state is ListTransactionLoading) {
-              return LoadingTransactionList();
-            } else if (state is ListTransactionReady) {
-              return TransactionList(transactions: state.transactions);
-            } else {
-              return Center(
-                child: Text(
-                    "Unable to handle bloc state: ${state.runtimeType.toString()}"),
-              );
-            }
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          onPressed: () {
-            Navigator.pushNamed(context, Routes.TransactionNew);
-            print("go to add transaction page");
-          },
-        ),
-        bottomNavigationBar:
-            KwartzBottomNavigationBar(KwartzNavigation.Transactions),
+      body: BlocBuilder<ListTransactionBloc, ListTransactionState>(
+        builder: (context, state) {
+          if (state is ListTransactionInitial) {
+            context.read<ListTransactionBloc>().add(FetchTransactionsEvent());
+            return Center(
+              child: Text("Initial state"),
+            );
+          } else if (state is ListTransactionLoading) {
+            return LoadingTransactionList();
+          } else if (state is ListTransactionReady) {
+            return TransactionList(transactions: state.transactions);
+          } else {
+            return Center(
+              child: Text(
+                  "Unable to handle bloc state: ${state.runtimeType.toString()}"),
+            );
+          }
+        },
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        onPressed: () {
+          Navigator.pushNamed(context, Routes.TransactionNew);
+          print("go to add transaction page");
+        },
+      ),
+      bottomNavigationBar:
+          KwartzBottomNavigationBar(KwartzNavigation.Transactions),
     );
   }
 }
