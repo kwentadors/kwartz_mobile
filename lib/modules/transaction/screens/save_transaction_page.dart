@@ -16,34 +16,38 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("New Transaction"),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: BlocConsumer<TransactionBloc, TransactionState>(
-        listener: (context, state) {
-          if (state is TransactionSaveSuccess) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                  SnackBar(content: Text("Successfully saved transaction")));
-          } else if (state is TransactionSaveError) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text("Something went wrong!")));
-          } else if (state is TransactionSaveSuccess) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text("Successfully saved!")));
-          }
-        },
-        builder: (context, state) {
-          if (state is TransactionSaving) {
-            return loadingForm();
-          }
-          return buildForm();
-        },
+    return BlocProvider<TransactionBloc>(
+      create: (context) => TransactionBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("New Transaction"),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+        body: BlocConsumer<TransactionBloc, TransactionState>(
+          listener: (context, state) {
+            if (state is TransactionSaveSuccess) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                    SnackBar(content: Text("Successfully saved transaction")));
+            } else if (state is TransactionSaveError) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                    SnackBar(content: Text("Something went wrong!")));
+            } else if (state is TransactionSaveSuccess) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text("Successfully saved!")));
+            }
+          },
+          builder: (context, state) {
+            if (state is TransactionSaving) {
+              return loadingForm();
+            }
+            return buildForm();
+          },
+        ),
       ),
     );
   }

@@ -77,9 +77,6 @@ class MyApp extends StatelessWidget {
 
   List<BlocProviderSingleChildWidget> _fetchBlocs() {
     return [
-      BlocProvider<TransactionBloc>(
-        create: (context) => TransactionBloc(),
-      ),
       BlocProvider<FinancialAccountBloc>(
         create: (context) =>
             FinancialAccountBloc(context.read<FinancialAccountRepository>()),
