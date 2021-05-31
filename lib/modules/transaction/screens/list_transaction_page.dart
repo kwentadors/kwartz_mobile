@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:kwartz_mobile/utils/router.dart';
+import 'common/kwartz_bottom_nav_bar.dart';
 import '../repositories/transaction_repository.dart';
 import '../blocs/list_transaction_bloc.dart';
 import '../models/transaction.dart';
+import '../../../utils/router.dart';
 
 class ListTransactionsPage extends StatelessWidget {
   @override
@@ -45,23 +46,8 @@ class ListTransactionsPage extends StatelessWidget {
             print("go to add transaction page");
           },
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.list_alt,
-              ),
-              label: 'Transactions',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.leaderboard,
-              ),
-              label: 'Reports',
-            ),
-          ],
-          currentIndex: 1,
-        ),
+        bottomNavigationBar:
+            KwartzBottomNavigationBar(KwartzNavigation.Transactions),
       ),
     );
   }
