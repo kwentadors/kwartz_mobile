@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/src/bloc_provider.dart';
+import 'package:flutter_bloc/src/repository_provider.dart';
+import 'package:kwartz_mobile/modules/asset_ledger/blocs/asset_ledger_bloc.dart';
 import 'package:kwartz_mobile/modules/asset_ledger/serializers/asset_report_serializer.dart';
+import 'package:kwartz_mobile/modules/transaction/blocs/list_transaction_bloc.dart';
 import 'modules/asset_ledger/repositories/asset_report_repository.dart';
 import 'utils/router.dart';
 import 'modules/transaction/repositories/transaction_repository.dart';
@@ -22,27 +26,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<FinancialAccountRepository>(
-            create: (context) => FinancialAccountRepository()),
-        RepositoryProvider<TransactionRepository>(
-            create: (context) => TransactionRepository()),
-        RepositoryProvider(
-          create: (context) => AssetReportRepository(
-            serializer: AssetReportSerializer(),
-          ),
-        )
-      ],
+      providers: _fetchRepositories(),
       child: MultiBlocProvider(
-        providers: [
-          BlocProvider<TransactionBloc>(
-            create: (context) => TransactionBloc(),
-          ),
-          BlocProvider<FinancialAccountBloc>(
-            create: (context) => FinancialAccountBloc(
-                context.read<FinancialAccountRepository>()),
-          )
-        ],
+        providers: _fetchBlocs(),
         child: MaterialApp(
           title: 'Kwartz',
           theme: ThemeData(
@@ -61,6 +47,11 @@ class MyApp extends StatelessWidget {
               onError: Colors.red,
               brightness: Brightness.light,
             ),
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              backgroundColor: Colors.black,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.brown[400],
+            ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           initialRoute: Routes.TransactionList,
@@ -68,5 +59,36 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<RepositoryProviderSingleChildWidget> _fetchRepositories() {
+    return [
+      RepositoryProvider<FinancialAccountRepository>(
+          create: (context) => FinancialAccountRepository()),
+      RepositoryProvider<TransactionRepository>(
+          create: (context) => TransactionRepository()),
+      RepositoryProvider(
+        create: (context) => AssetReportRepository(
+          serializer: AssetReportSerializer(),
+        ),
+      )
+    ];
+  }
+
+  List<BlocProviderSingleChildWidget> _fetchBlocs() {
+    return [
+      BlocProvider<FinancialAccountBloc>(
+        create: (context) =>
+            FinancialAccountBloc(context.read<FinancialAccountRepository>()),
+      ),
+      BlocProvider<ListTransactionBloc>(
+        create: (context) =>
+            ListTransactionBloc(context.read<TransactionRepository>()),
+      ),
+      BlocProvider<AssetLedgerBloc>(
+        create: (context) =>
+            AssetLedgerBloc(context.read<AssetReportRepository>()),
+      )
+    ];
   }
 }

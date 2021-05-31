@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwartz_mobile/modules/asset_ledger/repositories/asset_report_repository.dart';
+import 'common/kwartz_bottom_nav_bar.dart';
 import '../../asset_ledger/widgets/asset_list.dart';
 import '../../asset_ledger/widgets/asset_card.dart';
-import '../../asset_ledger/blocs/asset_ledger_bloc.dart';
 
 class AssetLedgerPage extends StatelessWidget {
   final _data = [
@@ -56,16 +54,13 @@ class AssetLedgerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AssetLedgerBloc>(
-      create: (context) =>
-          AssetLedgerBloc(context.read<AssetReportRepository>()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Ledger"),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
-        body: ListLedgerBody(data: _data),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Ledger"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      body: ListLedgerBody(data: _data),
+      bottomNavigationBar: KwartzBottomNavigationBar(KwartzNavigation.Reports),
     );
   }
 }
