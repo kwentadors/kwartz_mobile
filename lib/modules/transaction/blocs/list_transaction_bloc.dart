@@ -21,7 +21,8 @@ class ListTransactionBloc
   ) async* {
     if (event is FetchTransactionsEvent) {
       yield ListTransactionLoading(state.dateFilter);
-      List<Transaction> transactions = await repository.fetchAll();
+      List<Transaction> transactions =
+          await repository.fetchByMonthAndYear(state.dateFilter);
       yield ListTransactionReady(state.dateFilter, transactions);
     } else if (event is UpdateDateFilterEvent) {
       yield ListTransactionLoading(event.dateFilter);
