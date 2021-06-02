@@ -386,7 +386,9 @@ class JournalEntryDebit extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(journalEntry.account.name),
+        Expanded(
+          child: Text(journalEntry.account.name),
+        ),
         Row(
           children: [
             Container(
@@ -419,7 +421,9 @@ class JournalEntryCredit extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(journalEntry.account.name),
+          Expanded(
+            child: Text(journalEntry.account.name),
+          ),
           Row(
             children: [
               SizedBox(
