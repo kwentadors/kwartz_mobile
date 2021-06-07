@@ -45,7 +45,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
             if (state is TransactionSaving) {
               return loadingForm();
             }
-            return buildForm();
+            return buildForm(context);
           },
         ),
       ),
@@ -62,7 +62,7 @@ class _SaveTransactionPageState extends State<SaveTransactionPage> {
     );
   }
 
-  Widget buildForm() {
+  Widget buildForm(BuildContext context) {
     return Container(
       height: double.infinity,
       width: double.infinity,
