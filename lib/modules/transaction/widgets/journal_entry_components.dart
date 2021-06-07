@@ -85,26 +85,6 @@ class TransactionSideSection extends StatelessWidget {
   }
 }
 
-class SectionTitle extends StatelessWidget {
-  const SectionTitle(
-    this.title, {
-    Key key,
-  }) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          Text(title),
-        ],
-      ),
-    );
-  }
-}
-
 class JournalEntryWidget extends StatelessWidget {
   final JournalEntry entry;
 
