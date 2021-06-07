@@ -31,6 +31,7 @@ class _DatePickerState extends State<DatePicker> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: true,
       controller: widget.controller,
       validator: widget.validator,
       decoration: InputDecoration(
