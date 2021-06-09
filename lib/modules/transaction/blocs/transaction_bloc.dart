@@ -20,6 +20,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async* {
     if (event is SaveTransaction) {
       yield* handleSaveTransaction(event);
+    } else if (event is ResetTransaction) {
+      yield EditingTransactionState(Transaction.initial());
     } else if (event is UpdateTransactionDate) {
       var transaction =
           state.transaction.copyWith(transactionDate: event.transactionDate);

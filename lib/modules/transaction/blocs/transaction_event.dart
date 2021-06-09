@@ -9,6 +9,8 @@ class SaveTransaction extends TransactionEvent {
   SaveTransaction(this.transaction);
 }
 
+class ResetTransaction extends TransactionEvent {}
+
 class UpdateTransactionDate extends TransactionEvent {
   final DateTime transactionDate;
 

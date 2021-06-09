@@ -34,10 +34,7 @@ class _SaveTransactionFormState extends State<SaveTransactionForm> {
                   SizedBox(height: 16.0),
                   TotalAmountSection(),
                   SizedBox(height: 8.0),
-                  RaisedButton(
-                    onPressed: () => saveForm(context),
-                    child: Text("Record"),
-                  )
+                  actionButtons(context)
                 ],
               ),
             ),
@@ -47,9 +44,33 @@ class _SaveTransactionFormState extends State<SaveTransactionForm> {
     );
   }
 
-  void saveForm(BuildContext context) {
-    var transaction = context.read<TransactionBloc>().state.transaction;
-    context.read<TransactionBloc>().add(SaveTransaction(transaction));
+  RaisedButton actionButtons(BuildContext context) {
+    // ignore: close_sinks
+    var transactionBloc = context.read<TransactionBloc>();
+    if (transactionBloc.state is TransactionSaving) {
+      return RaisedButton(
+        child: Text("Saving..."),
+      );
+    }
+
+    if (transactionBloc.state is TransactionSaveSuccess) {
+      return RaisedButton(
+        onPressed: () {
+          transactionBloc.add(ResetTransaction());
+          Scaffold.of(context).showSnackBar(
+              SnackBar(content: Text("TODO:New trnsaction, it is!")));
+        },
+        child: Text("New Transaction"),
+      );
+    }
+
+    return RaisedButton(
+      onPressed: () {
+        var transaction = transactionBloc.state.transaction;
+        context.read<TransactionBloc>().add(SaveTransaction(transaction));
+      },
+      child: Text("Record"),
+    );
   }
 }
 
@@ -61,18 +82,12 @@ class TransactionDatePicker extends StatefulWidget {
 }
 
 class _TransactionDatePickerState extends State<TransactionDatePicker> {
-  final TextEditingController controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var transaction =
         BlocProvider.of<TransactionBloc>(context).state.transaction;
 
-    var formatter = DateFormat("MMMM dd, y (EEEE)");
-    controller.text = formatter.format(transaction.transactionDate);
-
     return DatePicker(
-      controller: controller,
       validator: (value) {
         if (value.isEmpty) {
           return "Select a transaction date";
@@ -83,7 +98,6 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
       initialDate: transaction.transactionDate,
       firstDate: DateTime(1900),
       lastDate: DateTime.now().add(Duration(days: 365)),
-      formatter: formatter,
       onChanged: (value) {
         BlocProvider.of<TransactionBloc>(context)
             .add(UpdateTransactionDate(value));
