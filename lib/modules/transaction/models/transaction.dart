@@ -80,7 +80,7 @@ class JournalEntry {
   FinancialAccount account;
   double amount;
 
-  JournalEntry(this.transaction, this.type, {this.account, this.amount = 0.0});
+  JournalEntry(this.transaction, this.type, {this.account, this.amount = 0});
 
   JournalEntry copyWith({FinancialAccount account, double amount}) {
     return JournalEntry(

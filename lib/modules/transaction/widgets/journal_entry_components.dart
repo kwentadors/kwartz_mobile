@@ -118,19 +118,25 @@ class JournalEntryWidget extends StatelessWidget {
 
 class AmountInput extends StatefulWidget {
   final JournalEntry entry;
-  const AmountInput({Key key, @required this.entry}) : super(key: key);
+  TextEditingController controller;
+
+  AmountInput({Key key, @required this.entry}) : super(key: key) {
+    controller = TextEditingController();
+  }
 
   @override
-  _AmountInputState createState() => _AmountInputState();
+  AmountInputState createState() => AmountInputState();
 }
 
-class _AmountInputState extends State<AmountInput> {
-  final TextEditingController controller = TextEditingController();
-
+class AmountInputState extends State<AmountInput> {
   @override
   Widget build(BuildContext context) {
+    var amount = this.widget.entry.amount;
+    var hasDecimal = (amount * 10) % 10 > 0;
+    var amountStr = (hasDecimal ? amount : amount.toInt()).toString();
+
     return TextFormField(
-      controller: controller,
+      initialValue: amountStr,
       decoration: InputDecoration(
         labelText: "Amount",
       ),
@@ -147,8 +153,10 @@ class _AmountInputState extends State<AmountInput> {
         return null;
       },
       onChanged: (value) {
-        var journalEntry =
-            this.widget.entry.copyWith(amount: double.parse(value));
+        var amountValue =
+            value.contains('.') ? double.parse(value) : int.parse(value);
+
+        var journalEntry = this.widget.entry.copyWith(amount: amountValue);
         var journalEntryIndex = (this.widget.key as ValueKey).value;
 
         if (journalEntry.type == JournalEntryType.DEBIT) {
