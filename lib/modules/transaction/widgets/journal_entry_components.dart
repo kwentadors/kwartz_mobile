@@ -55,6 +55,7 @@ class TransactionSideSection extends StatelessWidget {
         sectionHeader(),
         ...entries.asMap().entries.map((entry) => JournalEntryWidget(
               key: ValueKey(entry.key),
+              index: entry.key,
               entry: entry.value,
             )),
         addEntrySection(),
@@ -87,8 +88,9 @@ class TransactionSideSection extends StatelessWidget {
 
 class JournalEntryWidget extends StatelessWidget {
   final JournalEntry entry;
+  final int index;
 
-  const JournalEntryWidget({Key key, this.entry}) : super(key: key);
+  const JournalEntryWidget({Key key, this.entry, this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,13 +102,15 @@ class JournalEntryWidget extends StatelessWidget {
             flex: 2,
             child: AccountNameInput(
               key: key,
+              index: index,
               entry: entry,
             ),
           ),
           SizedBox(width: 8.0),
           Expanded(
             child: AmountInput(
-              key: key,
+              key: ValueKey(DateTime.now().millisecondsSinceEpoch),
+              index: index,
               entry: entry,
             ),
           ),
@@ -118,11 +122,9 @@ class JournalEntryWidget extends StatelessWidget {
 
 class AmountInput extends StatefulWidget {
   final JournalEntry entry;
-  TextEditingController controller;
+  final int index;
 
-  AmountInput({Key key, @required this.entry}) : super(key: key) {
-    controller = TextEditingController();
-  }
+  AmountInput({Key key, @required this.entry, this.index}) : super(key: key);
 
   @override
   AmountInputState createState() => AmountInputState();
@@ -157,14 +159,13 @@ class AmountInputState extends State<AmountInput> {
             value.contains('.') ? double.parse(value) : int.parse(value);
 
         var journalEntry = this.widget.entry.copyWith(amount: amountValue);
-        var journalEntryIndex = (this.widget.key as ValueKey).value;
 
         if (journalEntry.type == JournalEntryType.DEBIT) {
           BlocProvider.of<TransactionBloc>(context)
-              .add(UpdateDebitEntry(journalEntryIndex, journalEntry));
+              .add(UpdateDebitEntry(this.widget.index, journalEntry));
         } else {
           BlocProvider.of<TransactionBloc>(context)
-              .add(UpdateCreditEntry(journalEntryIndex, journalEntry));
+              .add(UpdateCreditEntry(this.widget.index, journalEntry));
         }
       },
     );
@@ -173,8 +174,10 @@ class AmountInputState extends State<AmountInput> {
 
 class AccountNameInput extends StatefulWidget {
   final JournalEntry entry;
+  final int index;
 
-  const AccountNameInput({Key key, @required this.entry}) : super(key: key);
+  const AccountNameInput({Key key, @required this.entry, this.index})
+      : super(key: key);
 
   @override
   _AccountNameInputState createState() => _AccountNameInputState();
@@ -211,13 +214,12 @@ class _AccountNameInputState extends State<AccountNameInput> {
               .toList(),
           onChanged: (value) {
             var journalEntry = this.widget.entry.copyWith(account: value);
-            var journalEntryIndex = (this.widget.key as ValueKey).value;
             if (journalEntry.type == JournalEntryType.DEBIT) {
               BlocProvider.of<TransactionBloc>(context)
-                  .add(UpdateDebitEntry(journalEntryIndex, journalEntry));
+                  .add(UpdateDebitEntry(this.widget.index, journalEntry));
             } else {
               BlocProvider.of<TransactionBloc>(context)
-                  .add(UpdateCreditEntry(journalEntryIndex, journalEntry));
+                  .add(UpdateCreditEntry(this.widget.index, journalEntry));
             }
           },
         );
