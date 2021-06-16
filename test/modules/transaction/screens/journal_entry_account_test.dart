@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kwartz_mobile/modules/financial_account/blocs/financial_account_bloc.dart';
+import 'package:kwartz_mobile/modules/transaction/widgets/journal_entry_components.dart';
 import 'package:kwartz_mobile/modules/transaction/widgets/save_transaction_form.dart';
 import 'package:mockito/mockito.dart';
 
