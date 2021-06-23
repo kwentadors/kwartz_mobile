@@ -131,14 +131,23 @@ class AmountInput extends StatefulWidget {
 }
 
 class AmountInputState extends State<AmountInput> {
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var amount = this.widget.entry.amount;
     var hasDecimal = (amount * 10) % 10 > 0;
-    var amountStr = (hasDecimal ? amount : amount.toInt()).toString();
+    controller.text = (hasDecimal ? amount : amount.toInt()).toString();
 
     return TextFormField(
-      initialValue: amountStr,
+      controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         labelText: "Amount",
       ),
@@ -154,20 +163,7 @@ class AmountInputState extends State<AmountInput> {
 
         return null;
       },
-      onChanged: (value) {
-        var amountValue =
-            value.contains('.') ? double.parse(value) : int.parse(value);
-
-        var journalEntry = this.widget.entry.copyWith(amount: amountValue);
-
-        if (journalEntry.type == JournalEntryType.DEBIT) {
-          BlocProvider.of<TransactionBloc>(context)
-              .add(UpdateDebitEntry(this.widget.index, journalEntry));
-        } else {
-          BlocProvider.of<TransactionBloc>(context)
-              .add(UpdateCreditEntry(this.widget.index, journalEntry));
-        }
-      },
+      onChanged: (value) => this.widget.entry.amount = double.parse(value),
     );
   }
 }

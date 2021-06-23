@@ -67,9 +67,11 @@ class _SaveTransactionFormState extends State<SaveTransactionForm> {
     return RaisedButton(
       onPressed: () {
         var transaction = transactionBloc.state.transaction;
+        if (!_formKey.currentState.validate()) return;
+        _formKey.currentState.save();
         context.read<TransactionBloc>().add(SaveTransaction(transaction));
       },
-      child: Text("Record"),
+      child: InkWell(child: Text("Record")),
     );
   }
 }
