@@ -39,6 +39,7 @@ class _DatePickerState extends State<DatePicker> {
       decoration: InputDecoration(
         labelText: widget.labelText,
       ),
+      // onChanged: (value) => this.widget.onChanged(value),
       onTap: () async {
         var date = await showDatePicker(
           context: context,
@@ -49,6 +50,7 @@ class _DatePickerState extends State<DatePicker> {
 
         if (date != null) {
           this.widget.controller.text = widget.formatter.format(date);
+          this.widget.onChanged(date);
         }
       },
     );

@@ -208,16 +208,7 @@ class _AccountNameInputState extends State<AccountNameInput> {
                     value: account,
                   ))
               .toList(),
-          onChanged: (value) {
-            var journalEntry = this.widget.entry.copyWith(account: value);
-            if (journalEntry.type == JournalEntryType.DEBIT) {
-              BlocProvider.of<TransactionBloc>(context)
-                  .add(UpdateDebitEntry(this.widget.index, journalEntry));
-            } else {
-              BlocProvider.of<TransactionBloc>(context)
-                  .add(UpdateCreditEntry(this.widget.index, journalEntry));
-            }
-          },
+          onChanged: (value) => this.widget.entry.account = value,
         );
       },
     );

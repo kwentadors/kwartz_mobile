@@ -22,28 +22,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       yield* handleSaveTransaction(event);
     } else if (event is ResetTransaction) {
       yield EditingTransactionState(Transaction.initial());
-    } else if (event is UpdateTransactionDate) {
-      var transaction =
-          state.transaction.copyWith(transactionDate: event.transactionDate);
-      yield EditingTransactionState(transaction);
     } else if (event is AddDebitEntryEvent) {
-      var transaction = state.transaction.withNewDebitEntry();
+      var transaction = state.transaction;
+      transaction.withNewDebitEntry();
       yield EditingTransactionState(transaction);
     } else if (event is AddCreditEntryEvent) {
-      var transaction = state.transaction.withNewCreditEntry();
+      var transaction = state.transaction;
+      transaction.withNewCreditEntry();
       yield EditingTransactionState(transaction);
-    } else if (event is UpdateDebitEntry) {
-      var journalEntry = event.journalEntry;
-      state.transaction.debitEntries[event.index]
-        ..account = journalEntry.account
-        ..amount = journalEntry.amount;
-      yield EditingTransactionState(state.transaction);
-    } else if (event is UpdateCreditEntry) {
-      var journalEntry = event.journalEntry;
-      state.transaction.creditEntries[event.index]
-        ..account = journalEntry.account
-        ..amount = journalEntry.amount;
-      yield EditingTransactionState(state.transaction);
     }
   }
 

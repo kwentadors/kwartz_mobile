@@ -84,6 +84,8 @@ class TransactionDatePicker extends StatefulWidget {
 }
 
 class _TransactionDatePickerState extends State<TransactionDatePicker> {
+  final controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var transaction =
@@ -100,10 +102,7 @@ class _TransactionDatePickerState extends State<TransactionDatePicker> {
       initialDate: transaction.transactionDate,
       firstDate: DateTime(1900),
       lastDate: DateTime.now().add(Duration(days: 365)),
-      onChanged: (value) {
-        BlocProvider.of<TransactionBloc>(context)
-            .add(UpdateTransactionDate(value));
-      },
+      onChanged: (value) => transaction.transactionDate = value,
     );
   }
 }

@@ -52,23 +52,18 @@ class Transaction {
 
   double get amount => debitEntries.fold(0, (sum, entry) => sum + entry.amount);
 
-  Transaction copyWith({
-    DateTime transactionDate,
-  }) {
-    return Transaction(
-      transactionDate: transactionDate ?? this.transactionDate,
-      description: this.description,
-      debitEntries: this.debitEntries,
-      creditEntries: this.creditEntries,
-    );
-  }
-
   Transaction withNewDebitEntry() {
-    return copyWith()..createDebitEntry();
+    var entry = JournalEntry(this, JournalEntryType.DEBIT);
+    this.debitEntries.add(entry);
+
+    return this;
   }
 
   Transaction withNewCreditEntry() {
-    return copyWith()..createCreditEntry();
+    var entry = JournalEntry(this, JournalEntryType.CREDIT);
+    this.creditEntries.add(entry);
+
+    return this;
   }
 }
 
