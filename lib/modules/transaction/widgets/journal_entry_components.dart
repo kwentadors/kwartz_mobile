@@ -148,6 +148,8 @@ class AmountInputState extends State<AmountInput> {
     return TextFormField(
       controller: controller,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      onTap: () => controller.selection = TextSelection(
+          baseOffset: 0, extentOffset: controller.value.text.length),
       decoration: InputDecoration(
         labelText: "Amount",
       ),
