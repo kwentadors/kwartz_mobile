@@ -52,23 +52,18 @@ class Transaction {
 
   double get amount => debitEntries.fold(0, (sum, entry) => sum + entry.amount);
 
-  Transaction copyWith({
-    DateTime transactionDate,
-  }) {
-    return Transaction(
-      transactionDate: transactionDate ?? this.transactionDate,
-      description: this.description,
-      debitEntries: this.debitEntries,
-      creditEntries: this.creditEntries,
-    );
-  }
-
   Transaction withNewDebitEntry() {
-    return copyWith()..createDebitEntry();
+    var entry = JournalEntry(this, JournalEntryType.DEBIT);
+    this.debitEntries.add(entry);
+
+    return this;
   }
 
   Transaction withNewCreditEntry() {
-    return copyWith()..createCreditEntry();
+    var entry = JournalEntry(this, JournalEntryType.CREDIT);
+    this.creditEntries.add(entry);
+
+    return this;
   }
 }
 
@@ -80,14 +75,14 @@ class JournalEntry {
   FinancialAccount account;
   double amount;
 
-  JournalEntry(this.transaction, this.type, {this.account, this.amount = 0.0});
+  JournalEntry(this.transaction, this.type, {this.account, this.amount = 0});
 
-  JournalEntry copyWith({FinancialAccount account, double amount}) {
+  JournalEntry copyWith({FinancialAccount account, num amount}) {
     return JournalEntry(
       transaction,
       type,
       account: account ?? this.account,
-      amount: amount ?? this.amount,
+      amount: (amount ?? this.amount)?.toDouble(),
     );
   }
 }
