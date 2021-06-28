@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 
 class ApiClient {
-  final hostname = "http://192.168.254.103:8000";
+  final hostname = "https://kwartz.herokuapp.com";
   final _logger = Logger("ApiClient");
 
   dynamic get({@required String path}) async {
