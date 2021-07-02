@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
             ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          initialRoute: Routes.TransactionList,
+          initialRoute: Routes.LedgerList,
           onGenerateRoute: KwartzRouter.onGenerateRoute,
         ),
       ),

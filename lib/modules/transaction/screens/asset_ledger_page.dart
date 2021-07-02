@@ -32,6 +32,11 @@ class ListLedgerBody extends StatelessWidget {
             height: 120.0,
             child: AssetsCard(),
           ),
+          Container(
+            width: double.infinity,
+            height: 120.0,
+            child: IncomeExpenseSummaryCard(),
+          ),
           SizedBox(height: 20),
           Expanded(child: AssetList())
         ],
