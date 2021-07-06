@@ -29,6 +29,17 @@ class IncomeExpenseReady extends IncomeExpenseState {
       };
 
   double get netAmount => income.values.last - expenses.values.last;
+
+  IncomeExpenseChartMetadata get chartMetadata =>
+      IncomeExpenseChartMetadata(income, expenses);
+}
+
+class IncomeExpenseChartMetadata {
+  final Map<int, double> income;
+  final Map<int, double> expenses;
+
+  IncomeExpenseChartMetadata(this.income, this.expenses);
+
   double get maxRange => _maxValue + interval / 3;
   double get minRange => _minValue - interval / 3;
 

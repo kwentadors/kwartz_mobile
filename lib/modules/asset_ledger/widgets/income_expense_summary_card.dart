@@ -87,9 +87,10 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
   }
 
   LineChartData _lineChartData(BuildContext context, IncomeExpenseReady state) {
+    final chartMetadata = state.chartMetadata;
     return LineChartData(
-      minY: state.minRange,
-      maxY: state.maxRange,
+      minY: chartMetadata.minRange,
+      maxY: chartMetadata.maxRange,
       lineBarsData: [
         _incomeSeriesData(state.income),
         _expenseSeriesData(state.expenses),
@@ -97,7 +98,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
       borderData: FlBorderData(show: false),
       gridData: FlGridData(
         drawHorizontalLine: true,
-        horizontalInterval: state.interval,
+        horizontalInterval: chartMetadata.interval,
       ),
       titlesData: FlTitlesData(
         leftTitles: SideTitles(
@@ -107,7 +108,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimary,
             );
           },
-          interval: state.interval,
+          interval: chartMetadata.interval,
         ),
         bottomTitles: SideTitles(
           showTitles: true,
