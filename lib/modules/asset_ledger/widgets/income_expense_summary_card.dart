@@ -1,54 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwartz_mobile/modules/asset_ledger/blocs/income_expense_bloc.dart';
+import 'package:kwartz_mobile/utils/date_utils.dart';
 import '../../../utils/text_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class IncomeExpenseSummaryCard extends StatelessWidget {
-  final income = const [
-    74463.70,
-    59342.80,
-    61174.50,
-    113168.45,
-    72761.86,
-    78200.95
-  ];
-  final expenses = const [
-    43415.92,
-    38707.92,
-    39559.09,
-    39334.30,
-    39679.46,
-    37018.93
-  ];
-
   const IncomeExpenseSummaryCard({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          verticalDirection: VerticalDirection.down,
-          textDirection: TextDirection.ltr,
-          children: [
-            cardHeader(context),
-            SizedBox(height: 8),
-            // if (state is AssetLedgerLoading || state is AssetLedgerInitial)
-            //   _buildLoadingSpinner(context),
-            // if (state is AssetLedgerReady)
-            _buildAssetFigures(context)
-          ],
-        ),
-      ),
+    return BlocBuilder<IncomeExpenseBloc, IncomeExpenseState>(
+      builder: (context, state) {
+        return Card(
+          color: Theme.of(context).colorScheme.primary,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              verticalDirection: VerticalDirection.down,
+              textDirection: TextDirection.ltr,
+              children: [
+                cardHeader(context, state),
+                SizedBox(height: 8),
+                // if (state is AssetLedgerLoading || state is AssetLedgerInitial)
+                // _buildLoadingSpinner(context),
+                // if (state is AssetLedgerReady)
+                _buildAssetFigures(context, state)
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget cardHeader(BuildContext context) {
+  Widget cardHeader(BuildContext context, IncomeExpenseReady state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -61,7 +52,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
               .copyWith(color: Colors.white),
         ),
         Text(
-          formatCurrency(336623.22),
+          formatCurrency(state.netAmount),
           style: Theme.of(context).textTheme.headline5.copyWith(
                 color: Theme.of(context).colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,
@@ -82,33 +73,31 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
   //   );
   // }
 
-  Widget _buildAssetFigures(BuildContext context) {
+  Widget _buildAssetFigures(BuildContext context, IncomeExpenseReady state) {
     return AspectRatio(
       aspectRatio: 1.5,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: LineChart(
-          _lineChartData(context),
+          _lineChartData(context, state),
           swapAnimationDuration: Duration(milliseconds: 850),
         ),
       ),
     );
   }
 
-  LineChartData _lineChartData(BuildContext context) {
-    final horizontalInterval = 30000.0;
-
+  LineChartData _lineChartData(BuildContext context, IncomeExpenseReady state) {
     return LineChartData(
-      minY: 5000,
-      maxY: 120000,
+      minY: state.minRange,
+      maxY: state.maxRange,
       lineBarsData: [
-        _incomeSeriesData(),
-        _expenseSeriesData(),
+        _incomeSeriesData(state.income),
+        _expenseSeriesData(state.expenses),
       ],
       borderData: FlBorderData(show: false),
       gridData: FlGridData(
         drawHorizontalLine: true,
-        horizontalInterval: horizontalInterval,
+        horizontalInterval: state.interval,
       ),
       titlesData: FlTitlesData(
         leftTitles: SideTitles(
@@ -118,7 +107,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimary,
             );
           },
-          interval: horizontalInterval,
+          interval: state.interval,
         ),
         bottomTitles: SideTitles(
           showTitles: true,
@@ -127,15 +116,15 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimary,
             );
           },
-          getTitles: (value) {
-            return value.toString();
+          getTitles: (double value) {
+            return DateUtils.toMonthName(value.toInt() - 1);
           },
         ),
       ),
     );
   }
 
-  LineChartBarData _incomeSeriesData() {
+  LineChartBarData _incomeSeriesData(Map<int, double> income) {
     return LineChartBarData(
       colors: [Colors.greenAccent],
       isCurved: true,
@@ -147,7 +136,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
     );
   }
 
-  LineChartBarData _expenseSeriesData() {
+  LineChartBarData _expenseSeriesData(Map<int, double> expenses) {
     return LineChartBarData(
       colors: [Colors.redAccent],
       isCurved: true,
@@ -159,9 +148,8 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
     );
   }
 
-  List<FlSpot> _serialize(List<double> seriesData) {
+  List<FlSpot> _serialize(Map<int, double> seriesData) {
     return seriesData
-        .asMap()
         .map((index, value) {
           return MapEntry(index, FlSpot(index.toDouble(), value));
         })
