@@ -53,8 +53,13 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
         ),
         Text(
           formatCurrency(state.netAmount),
+          key: ValueKey('income-expense-net-amount'),
           style: Theme.of(context).textTheme.headline5.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: (state.netAmount > 0
+                    ? Colors.greenAccent
+                    : state.netAmount == 0
+                        ? Colors.grey
+                        : Colors.redAccent),
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -75,6 +80,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
 
   Widget _buildAssetFigures(BuildContext context, IncomeExpenseReady state) {
     return AspectRatio(
+      key: ValueKey('income-expense-line-graph'),
       aspectRatio: 1.5,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
