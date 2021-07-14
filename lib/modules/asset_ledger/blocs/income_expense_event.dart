@@ -6,3 +6,5 @@ abstract class IncomeExpenseEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class FetchIncomeExpenseReport extends IncomeExpenseEvent {}

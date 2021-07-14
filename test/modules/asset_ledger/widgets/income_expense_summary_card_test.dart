@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kwartz_mobile/modules/asset_ledger/blocs/income_expense_bloc.dart';
+import 'package:kwartz_mobile/modules/asset_ledger/models/income_expense_report.dart';
 import 'package:kwartz_mobile/modules/asset_ledger/widgets/income_expense_summary_card.dart';
 import 'package:mockito/mockito.dart';
 
@@ -62,9 +63,9 @@ void main() {
       };
 
       state = MockIncomeExpenseReady();
-      when(state.netAmount).thenReturn(31047.48);
-      when(state.income).thenReturn(income);
-      when(state.expenses).thenReturn(expenses);
+      when(state.report.netAmount).thenReturn(31047.48);
+      when(state.report.income).thenReturn(income);
+      when(state.report.expenses).thenReturn(expenses);
       when(state.chartMetadata).thenReturn(MockChartMetadata());
 
       when(_bloc.state).thenReturn(state);
@@ -81,7 +82,7 @@ void main() {
 
     group("net amount", () {
       testWidgets("should be green if income > expense", (tester) async {
-        when(state.netAmount).thenReturn(31047.48);
+        when(state.report.netAmount).thenReturn(31047.48);
 
         await tester.pumpWidget(_widgetWrapper(IncomeExpenseSummaryCard()));
 
@@ -91,7 +92,7 @@ void main() {
                 'text color equals green', Colors.greenAccent));
       });
       testWidgets("should be grey if expense == income", (tester) async {
-        when(state.netAmount).thenReturn(0);
+        when(state.report.netAmount).thenReturn(0);
 
         await tester.pumpWidget(_widgetWrapper(IncomeExpenseSummaryCard()));
 
@@ -101,7 +102,7 @@ void main() {
                 'text color equals green', Colors.grey));
       });
       testWidgets("should be red if expense > income", (tester) async {
-        when(state.netAmount).thenReturn(-1886.04);
+        when(state.report.netAmount).thenReturn(-1886.04);
 
         await tester.pumpWidget(_widgetWrapper(IncomeExpenseSummaryCard()));
 

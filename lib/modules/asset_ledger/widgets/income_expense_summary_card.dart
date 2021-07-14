@@ -28,10 +28,10 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
               children: [
                 cardHeader(context, state),
                 SizedBox(height: 8),
-                // if (state is AssetLedgerLoading || state is AssetLedgerInitial)
-                // _buildLoadingSpinner(context),
-                // if (state is AssetLedgerReady)
-                _buildAssetFigures(context, state)
+                if (state is IncomeExpenseInitial)
+                  _buildLoadingSpinner(context),
+                if (state is IncomeExpenseReady)
+                  _buildAssetFigures(context, state)
               ],
             ),
           ),
@@ -40,9 +40,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
     );
   }
 
-  Widget cardHeader(BuildContext context, IncomeExpenseReady state) {
-    final colorScheme = NetValueColorScheme.getColorScheme(state.netAmount);
-
+  Widget cardHeader(BuildContext context, IncomeExpenseState state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -54,28 +52,31 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
               .headline6
               .copyWith(color: Colors.white),
         ),
-        Text(
-          formatCurrency(state.netAmount),
-          key: ValueKey('income-expense-net-amount'),
-          style: Theme.of(context).textTheme.headline5.copyWith(
-                color: colorScheme.color,
-                fontWeight: FontWeight.bold,
-              ),
-        ),
+        if (state is IncomeExpenseReady)
+          Text(
+            formatCurrency(state.report.netAmount),
+            key: ValueKey('income-expense-net-amount'),
+            style: Theme.of(context).textTheme.headline5.copyWith(
+                  color:
+                      NetValueColorScheme.getColorScheme(state.report.netAmount)
+                          .color,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
       ],
     );
   }
 
-  // Container _buildLoadingSpinner(BuildContext context) {
-  //   return Container(
-  //     child: CircularProgressIndicator(
-  //       valueColor: AlwaysStoppedAnimation<Color>(
-  //         Theme.of(context).colorScheme.secondary,
-  //       ),
-  //       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-  //     ),
-  //   );
-  // }
+  Container _buildLoadingSpinner(BuildContext context) {
+    return Container(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(
+          Theme.of(context).colorScheme.secondary,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      ),
+    );
+  }
 
   Widget _buildAssetFigures(BuildContext context, IncomeExpenseReady state) {
     return AspectRatio(
@@ -97,8 +98,8 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
       minY: chartMetadata.minRange,
       maxY: chartMetadata.maxRange,
       lineBarsData: [
-        _incomeSeriesData(state.income),
-        _expenseSeriesData(state.expenses),
+        _incomeSeriesData(state.report.income),
+        _expenseSeriesData(state.report.expenses),
       ],
       borderData: FlBorderData(show: false),
       gridData: FlGridData(
