@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwartz_mobile/modules/asset_ledger/blocs/income_expense_bloc.dart';
+import 'package:kwartz_mobile/utils/color_scheme.dart';
 import 'package:kwartz_mobile/utils/date_utils.dart';
 import '../../../utils/text_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -40,6 +41,8 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
   }
 
   Widget cardHeader(BuildContext context, IncomeExpenseReady state) {
+    final colorScheme = NetValueColorScheme.getColorScheme(state.netAmount);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -55,11 +58,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
           formatCurrency(state.netAmount),
           key: ValueKey('income-expense-net-amount'),
           style: Theme.of(context).textTheme.headline5.copyWith(
-                color: (state.netAmount > 0
-                    ? Colors.greenAccent
-                    : state.netAmount == 0
-                        ? Colors.grey
-                        : Colors.redAccent),
+                color: colorScheme.color,
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -132,25 +131,27 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
   }
 
   LineChartBarData _incomeSeriesData(Map<int, double> income) {
+    final colorScheme = NetValueColorScheme.POSITIVE_COLOR_SCHEME;
     return LineChartBarData(
-      colors: [Colors.greenAccent],
+      colors: [colorScheme.color],
       isCurved: true,
       spots: _serialize(income),
       belowBarData: BarAreaData(
         show: true,
-        colors: [Colors.greenAccent.withOpacity(0.3)],
+        colors: [colorScheme.color.withOpacity(0.3)],
       ),
     );
   }
 
   LineChartBarData _expenseSeriesData(Map<int, double> expenses) {
+    final colorScheme = NetValueColorScheme.NEGATIVE_COLOR_SCHEME;
     return LineChartBarData(
-      colors: [Colors.redAccent],
+      colors: [colorScheme.color],
       isCurved: true,
       spots: _serialize(expenses),
       belowBarData: BarAreaData(
         show: true,
-        colors: [Colors.redAccent.withOpacity(0.3)],
+        colors: [colorScheme.color.withOpacity(0.3)],
       ),
     );
   }
