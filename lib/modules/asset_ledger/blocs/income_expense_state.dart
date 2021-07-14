@@ -10,7 +10,9 @@ abstract class IncomeExpenseState extends Equatable {
 class IncomeExpenseInitial extends IncomeExpenseState {}
 
 class IncomeExpenseReady extends IncomeExpenseState {
-  IncomeExpenseReport get report => IncomeExpenseReport();
+  final IncomeExpenseReport report;
+
+  IncomeExpenseReady(this.report);
 
   IncomeExpenseChartMetadata get chartMetadata =>
       IncomeExpenseChartMetadata(report);

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc/src/bloc_provider.dart';
 import 'package:flutter_bloc/src/repository_provider.dart';
-import 'package:kwartz_mobile/modules/asset_ledger/blocs/asset_ledger_bloc.dart';
-import 'package:kwartz_mobile/modules/asset_ledger/blocs/income_expense_bloc.dart';
-import 'package:kwartz_mobile/modules/asset_ledger/serializers/asset_report_serializer.dart';
-import 'package:kwartz_mobile/modules/transaction/blocs/list_transaction_bloc.dart';
+import 'modules/asset_ledger/blocs/asset_ledger_bloc.dart';
+import 'modules/asset_ledger/blocs/income_expense_bloc.dart';
+import 'modules/asset_ledger/repositories/income_expense_repository.dart';
+import 'modules/asset_ledger/serializers/asset_report_serializer.dart';
+import 'modules/transaction/blocs/list_transaction_bloc.dart';
 import 'modules/asset_ledger/repositories/asset_report_repository.dart';
 import 'utils/router.dart';
 import 'modules/transaction/repositories/transaction_repository.dart';
@@ -90,7 +91,7 @@ class MyApp extends StatelessWidget {
             AssetLedgerBloc(context.read<AssetReportRepository>()),
       ),
       BlocProvider<IncomeExpenseBloc>(
-        create: (context) => IncomeExpenseBloc(),
+        create: (context) => IncomeExpenseBloc(IncomeExpenseRepository()),
       )
     ];
   }
