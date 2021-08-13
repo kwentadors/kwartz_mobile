@@ -5,9 +5,7 @@ import '../blocs/asset_ledger_bloc.dart';
 import '../models/asset_report.dart';
 
 class AssetList extends StatelessWidget {
-  final List<Map<String, dynamic>> data;
-
-  const AssetList({Key key, this.data}) : super(key: key);
+  const AssetList({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AssetLedgerBloc, AssetLedgerState>(
