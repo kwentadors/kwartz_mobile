@@ -1,25 +1,31 @@
 import 'dart:math';
 
 class IncomeExpenseReport {
-  Map<int, double> get income => {
-        DateTime.july: 74463.70,
-        DateTime.june: 59342.80,
-        DateTime.may: 61174.50,
-        DateTime.april: 113168.45,
-        DateTime.march: 72761.86,
-        DateTime.february: 78200.95,
-      };
+  final _incomeEntries = Map<int, double>();
+  final _expenseEntries = Map<int, double>();
+  static final BASE_YEAR = 1900;
 
-  Map<int, double> get expenses => {
-        DateTime.july: 43415.92,
-        DateTime.june: 38707.92,
-        DateTime.may: 39559.09,
-        DateTime.april: 29334.30,
-        DateTime.march: 39679.46,
-        DateTime.february: 36718.93,
-      };
+  Map<int, double> get income => _incomeEntries;
 
-  double get netAmount => income.values.last - expenses.values.last;
+  Map<int, double> get expenses => _expenseEntries;
+
+  double get netAmount =>
+      income.values.last -
+      (_expenseEntries.isNotEmpty ? _expenseEntries.values.last : 0);
+
+  void setIncome(int month, int year, double income) {
+    int key = _serializeKey(month, year);
+    _incomeEntries[key] = income;
+  }
+
+  void setExpense(int month, int year, double expense) {
+    int key = _serializeKey(month, year);
+    _expenseEntries[key] = expense;
+  }
+
+  int _serializeKey(int month, int year) {
+    return (year - BASE_YEAR) * 12 + (month - 1);
+  }
 }
 
 class IncomeExpenseChartMetadata {
