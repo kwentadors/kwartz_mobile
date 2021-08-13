@@ -1,12 +1,18 @@
-import 'package:kwartz_mobile/modules/asset_ledger/models/income_expense_report.dart';
-import 'package:kwartz_mobile/utils/repositories/api.dart';
+import 'package:flutter/material.dart';
+import '../models/income_expense_report.dart';
+import '../serializers/income_expense_report_serializer.dart';
+import '../../../utils/repositories/api.dart';
 
 class IncomeExpenseRepository {
   final apiClient = ApiClient();
+  final IncomeExpenseReportSerializer serializer;
+  static const URL = "/api/v1/reports/income-expense";
+
+  IncomeExpenseRepository({@required this.serializer});
 
   Future<IncomeExpenseReport> fetch() async {
-    await Future.delayed(Duration(seconds: 2));
-
-    return IncomeExpenseReport();
+    var response = await apiClient.get(path: URL);
+    var report = serializer.deserialize(response);
+    return report;
   }
 }

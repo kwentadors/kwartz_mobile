@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc/src/bloc_provider.dart';
 import 'package:flutter_bloc/src/repository_provider.dart';
+import 'modules/asset_ledger/serializers/income_expense_report_serializer.dart';
 import 'modules/asset_ledger/blocs/asset_ledger_bloc.dart';
 import 'modules/asset_ledger/blocs/income_expense_bloc.dart';
 import 'modules/asset_ledger/repositories/income_expense_repository.dart';
@@ -91,7 +92,9 @@ class MyApp extends StatelessWidget {
             AssetLedgerBloc(context.read<AssetReportRepository>()),
       ),
       BlocProvider<IncomeExpenseBloc>(
-        create: (context) => IncomeExpenseBloc(IncomeExpenseRepository()),
+        create: (context) => IncomeExpenseBloc(
+          IncomeExpenseRepository(serializer: IncomeExpenseReportSerializer()),
+        ),
       )
     ];
   }

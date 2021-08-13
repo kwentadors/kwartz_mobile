@@ -124,7 +124,7 @@ class IncomeExpenseSummaryCard extends StatelessWidget {
             );
           },
           getTitles: (double value) {
-            return DateUtils.toMonthName(value.toInt() - 1);
+            return DateUtils.toMonthName((value % 12).toInt());
           },
         ),
       ),

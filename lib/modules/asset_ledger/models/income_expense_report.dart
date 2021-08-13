@@ -3,6 +3,7 @@ import 'dart:math';
 class IncomeExpenseReport {
   final _incomeEntries = Map<int, double>();
   final _expenseEntries = Map<int, double>();
+  static final BASE_YEAR = 1900;
 
   Map<int, double> get income => _incomeEntries;
 
@@ -23,7 +24,6 @@ class IncomeExpenseReport {
   }
 
   int _serializeKey(int month, int year) {
-    final BASE_YEAR = 1900;
     return (year - BASE_YEAR) * 12 + (month - 1);
   }
 }
